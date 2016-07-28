@@ -21,3 +21,233 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
+
+
+
+$light:                           #fff !default;
+$stable:                          #394264 !default; // bg color dark
+$positive:                        #4fc4f6 !default; // okay button popup, item headings
+$calm:                            #11c1f3 !default;
+$balanced:                        #fcb150 !default; // spinner orange
+$energized:                       #11a8ab !default; // top header cyan
+$assertive:                       #BF3030 !default;
+$royal:                           #50597b !default; // items
+$dark:                            #444 !default;
+
+$base-background-color:           $stable;
+$base-color:                      $light;
+
+$item-royal-text:                 $light;
+
+$scroll-refresh-icon-color:       $balanced;
+
+$bar-stable-text:                 $light;
+$bar-stable-border:               #383f5d;
+
+$button-default-text:             $light !default;
+$button-default-active-bg:        darken($stable, 10) !default;
+
+$checkbox-width:                  20px !default;
+$checkbox-height:                 20px !default;
+$checkbox-off-bg-color:           $royal !default;
+$checkbox-border-width:           0px !default;
+$popup-background-color:          rgba(255,255,255,1) !default;
+
+@font-face {
+    font-family: Roboto;
+    src: url(Roboto-Regular.ttf);
+}
+
+$font-family-base: Roboto;
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+
+.background-stable {
+  background-color: $stable;
+}
+
+.background-royal {
+  background-color: $royal;
+}
+
+.item {
+  &.item-divider {
+    background-color: $stable;
+    border-width: 0px;
+    color: $light;
+  }
+
+  > .item-content {
+    > p {
+      color: $light;
+    }
+    > h2 {
+      color: $positive;
+      font-weight: bold;
+    }
+  }
+}
+
+.image {
+  border: 2px solid $energized;
+  @include border-radius(50%);
+  width: 200px;
+  height: 200px;
+}
+
+.modal {
+  h1, h2, h3 {
+    color: $dark;
+  }
+}
+
+.popup .popup-body input[type="text"] {
+  border: 1px solid lighten($stable, 40);
+  padding: 0 5px;
+}
+
+.spinner svg {
+  stroke: $balanced;
+  fill: $balanced;
+}
+
+/* General
+==================================*/
+h1 {
+    color: #fff;
+    text-shadow: 0 1px 0px #000;
+    font-size: 42px;
+}
+
+
+/* Utilities
+==================================*/
+.title-bordered {
+    border-top: solid 2px #bbb;
+    padding-top: 30px;
+}
+
+p {
+    color: #555;
+    margin: 0 0 25px;
+}
+
+.scroll {
+    height: 100%;
+}
+
+
+/* Menu
+==================================*/
+.menu .bar.bar-header.expanded {
+    transition: all .5s ease-in-out;
+}
+
+.menu-open .bar.bar-header.expanded {
+    background-color: #222;
+}
+
+.menu h2 {
+    bottom: 0;
+    font-size: 18px;
+    left: 16px;
+    position: absolute;
+}
+
+.menu .avatar {
+    height: 88px;
+    width: 88px;
+}
+
+.menu.menu-left * {
+    font-weight: bold;
+}
+
+.menu-open .ion-navicon {
+    transform: rotate(-360deg);
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.menu-open .ion-navicon:before {
+    content: "\f2ca";
+}
+
+
+/* Login
+==================================*/
+.app-icon {
+    background-color: #fff;
+   // background: url('../img/crown.jpg') center;
+    background-size: cover;
+    border-radius: 50%;
+    height: 125px;
+    margin: 0 auto;
+    width: 125px;
+}
+
+.social-login {
+    position: fixed;
+    bottom: 0;
+}
+
+.content h1 {
+	margin-bottom: 5rem;
+}
+
+
+
+
+
+.log .item {
+
+    padding-left: 0;
+    padding-right: 0;
+ }
+
+.lists {
+	margin-right: 2rem;
+	margin-left: 2rem;
+}
+
+
+.lists .item  {
+    min-height: 42px;
+    text-align: left;
+    padding: 5px;
+	width: 100%;
+	color: #000;
+}
+
+.lists .item-input {
+	color: #000;	
+}
+.lists input {
+	    background-color: rgba(181, 181, 181, 0.6);
+	    bottom: 0;
+		color: #000;
+	    letter-spacing: .25rem;
+	    padding: 20px 10px;
+	    position: relative;
+	    z-index: 1;		
+		min-height: 45px;
+}
+
+
+
+
+input::-webkit-input-placeholder {
+  color: red;
+}
+
+input::-moz-placeholder {
+  color: red;
+}
+
+input::-ms-input-placeholder { /* IE10+ */
+  color: red;
+}
