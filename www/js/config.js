@@ -11,7 +11,7 @@ angular.module('starter.config', [])
   .constant('$state.go', '/login')
 
   // your Firebase data URL goes here, no trailing slash
-  .constant('FBURL', 'https://glowing-fire-4410.firebaseio.com/')
+  .constant('FBURL', 'events-app-363cb.firebaseapp.com')
 
   // double check that the app has been configured before running it and blowing up space and time
   .run(['FBURL', '$timeout', function(FBURL, $timeout) {
