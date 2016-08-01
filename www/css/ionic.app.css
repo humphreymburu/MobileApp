@@ -9802,3 +9802,6 @@ input::-moz-placeholder {
 input::-ms-input-placeholder {
   /* IE10+ */
   color: red; }
+
+.events p {
+  font-weight: bold; }

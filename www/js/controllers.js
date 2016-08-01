@@ -228,7 +228,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
           })
           .then(function(user) {
             // create a user profile in our data store
-			  var ref = firebase.database().ref('users/' + firebaseUser.uid);
+			  var ref = firebase.database().ref('users/' + firebaseUse.uid);
 			              return fbutil.handler(function(cb) {
 			                ref.set({email: email, name: name||firstPartOfEmail(email)}, cb);
 			              });
@@ -333,6 +333,60 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
       ionicMaterialInk.displayEffect();
   })
 
+
+
+  .controller('AddEventCtrl', function($scope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+      $scope.$parent.setHeaderFab('right');
+
+      $timeout(function() {
+          ionicMaterialMotion.fadeSlideIn({
+              selector: '.animate-fade-slide-in .item'
+          });
+      }, 200);
+
+      // Activate ink for controller
+      ionicMaterialInk.displayEffect();
+	  
+	  $scope.types = [
+		  { id: 1, type: 'Appearance'},
+		  { id: 2, type: 'Attraction'},
+		  { id: 3, type: 'Camp'},
+		  { id: 4, type: 'Concert'},
+		  { id: 5, type: 'Conference'},
+		  { id: 6, type: 'Convention'},
+		  { id: 7, type: 'Demonstration'},
+		  { id: 8, type: 'Dinner'},
+		  { id: 9, type: 'Festival'},
+		  { id: 10, type: 'Food Tasting'},
+		  { id: 11, type: 'Game'},
+		  { id: 12, type: 'Marathon'},
+		  { id: 13, type: 'Meeting'},
+		  { id: 14, type: 'Other'},
+		  { id: 15, type: 'Party'},
+		  { id: 16, type: 'Race'},
+		  { id: 17, type: 'Rally'},
+		  { id: 18, type: 'Screening'},
+		  { id: 19, type: 'Seminar'},
+		  { id: 20, type: 'Tour'},
+		  { id: 21, type: 'Festival'},
+		  { id: 22, type: 'Wine Tasting'}  	
+	  ];
+	  
+	  $scope.settingsList = [
+	     { text: "Private", checked: true },
+		  { text: "Public", checked: false }
+	   ];
+	  
+	  
+	  
+  })
+
+
+
   .controller('GalleryCtrl', function($scope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
@@ -352,4 +406,46 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
 
   })
   
-  ;
+  
+  
+  .controller('eventCategoryCtrl', function($scope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
+      $scope.$parent.showHeader();
+      //$scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+     // $scope.$parent.setHeaderFab(false);
+
+      // Activate ink for controller
+     // ionicMaterialInk.displayEffect();
+
+      ionicMaterialMotion.pushDown({
+          selector: '.push-down'
+      });
+      ionicMaterialMotion.fadeSlideInRight({
+          selector: '.animate-fade-slide-in .item'
+      });
+
+  })
+  
+  
+  
+  .controller('ProfileCtrlFabButton', function($scope, $stateParams, $timeout, ionicMaterialInk, $state, ionicMaterialMotion, $ionicPopup, $rootScope) {
+      // Set Header
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.$parent.setHeaderFab('left');
+
+      $timeout(function () {
+          $scope.showFabButton = true;
+      }, 900);
+
+
+	  $scope.create = function() {
+	      $state.go('app.addEvent');
+	  };
+
+
+    
+
+  })
+ ;

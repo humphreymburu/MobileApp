@@ -64,6 +64,9 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
       controller: 'AppCtrl'
   })
 
+  
+  
+  
   .state('app.activity', {
       url: '/activity',
       views: {
@@ -72,7 +75,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
               controller: 'ActivityCtrl'
           },
           'fabContent': {
-              template: '<button id="fab-activity" class="button button-fab button-fab-top-right expanded button-energized-900 flap"><i class="icon ion-paper-airplane"></i></button>',
+              template: '<button id="fab-activity" class="button button-fab button-fab-top-right expanded button-energized-900 flap"><i class="icon ion-calendar"></i></button>',
               controller: function ($timeout) {
                   $timeout(function () {
                       document.getElementById('fab-activity').classList.toggle('on');
@@ -138,37 +141,50 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
       views: {
           'menuContent': {
               templateUrl: 'templates/profile.html',
-              controller: 'ProfileCtrl',
-			  resolve: {
-        // forces the page to wait for this promise to resolve before controller is loaded
-        // the controller can then inject `user` as a dependency. This could also be done
-        // in the controller, but this makes things cleaner (controller doesn't need to worry
-        // about auth status or timing of accessing data or displaying elements)
-        user: ['Auth', function (Auth) {
-          return Auth.$waitForSignIn();
-        }]
-      }
+              controller: 'ProfileCtrl'
           },
           'fabContent': {
-              template: '<button id="fab-profile" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
-              controller: function ($timeout) {
-                  /*$timeout(function () {
-                      document.getElementById('fab-profile').classList.toggle('on');
-                  }, 800);*/
-              }
+              templateUrl: 'templates/profileFabButtonAdd.html',
+              controller: 'ProfileCtrlFabButton'
           }
       }
   })
 
+  .state('app.eventCat', {
+        url: '/eventCat',
+        views: {
+          'menuContent' :{
+            templateUrl: 'templates/eventCat.html',
+            controller: 'eventCategoryCtrl'
+          },
+          'fabContent': {
+              templateUrl: '',
+              controller: ''
+          }
+        }
+      })
 
 
+	  .state('app.addEvent', {
+	        url: '/addEvent',
+	        views: {
+	          'menuContent' :{
+	            templateUrl: 'templates/addEvent.html',
+	            controller: 'AddEventCtrl'
+	          },
+	          'fabContent': {
+	              templateUrl: '',
+	              controller: ''
+	          }
+	        }
+	      })
 
 
 
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/login');
+  $urlRouterProvider.otherwise('/app/profile');
   
 
 });
