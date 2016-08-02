@@ -1,5 +1,5 @@
 'use strict'
-angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
+angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout) {
     // Form data for the login modal
@@ -335,12 +335,14 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
 
 
 
-  .controller('AddEventCtrl', function($scope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+  .controller('AddEventCtrl', function($scope, Auth, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
       $scope.$parent.setExpanded(true);
       $scope.$parent.setHeaderFab('right');
+	  
+	  
 
       $timeout(function() {
           ionicMaterialMotion.fadeSlideIn({
@@ -350,6 +352,93 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
 
       // Activate ink for controller
       ionicMaterialInk.displayEffect();
+	  
+	  
+  	$scope.data = {
+  		"nameEvent" : null,
+  		"desc"  : null,
+  		"type" : null,
+  		"date" : null,
+		"venue" : null
+  	}
+	
+	  
+	  
+	  
+	  var firebaseUser = Auth.$getAuth();
+	  
+	  console.log("Signed in as:", firebaseUser.uid);
+	  
+	  if(firebaseUser) {
+		  var eventsRef = new firebase.database().ref('users/' +  firebaseUser.uid + '/events');
+		  var eventsInfo = $firebaseArray(eventsRef);
+		  
+          
+		  $scope.addEvent =  function(nameEvent,desc,type,date,venue) {
+			 
+			  var nameEvent = $scope.data.nameEvent;
+			  var desc  = $scope.data.desc;
+			  var type = $scope.data.venue;
+			  var date = $scope.data.date;
+			  var venue= $scope.data.venue;
+			 
+			  eventsInfo.$add ({
+				  nameEvent,desc,type,date,venue
+		         
+				  
+			  }).then(function(ref) {
+				  
+				  $scope.data.nameEvent = '';
+				  $scope.data.desc = '';
+				  $scope.data.venue = '';
+				  $scope.data.date = '';
+				  $scope.data.venue = '';
+				  
+				  
+				  
+				  var id = ref.key;
+				  console.log("added record with id " + id);
+			  });
+		  };
+	   }//user authenticated
+	  
+	  
+	  
+	  
+	  
+   	document.addEventListener("deviceready", function () {
+   	  $scope.upload = function() {
+   	          var options = {
+   	              quality : 75,
+   	              destinationType : Camera.DestinationType.FILE_URI,
+   	              sourceType : Camera.PictureSourceType.PHOTOLIBRARY,
+   	              allowEdit : true,
+   	              encodingType: Camera.EncodingType.JPEG,
+   	              popoverOptions: CameraPopoverOptions,
+   	              targetWidth: 500,
+   	              targetHeight: 500,
+   	              saveToPhotoAlbum: false
+   	          };
+	          
+   			  $cordovaCamera.getPicture(options).then(function(imageData) {
+   			        //var image = document.getElementById('myImage');
+   			        $scope.pic= "data:image/jpeg;base64," + imageData;
+   			        
+					//savePic(imageData);
+				  
+				  
+				  }, function(err) {
+   			        // error
+					  console.error(err);
+   			      });	  
+   	      }	  
+   	  }, false);
+	
+	  
+	  
+	  
+	  
+	  
 	  
 	  $scope.types = [
 		  { id: 1, type: 'Appearance'},
@@ -376,10 +465,8 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth'])
 		  { id: 22, type: 'Wine Tasting'}  	
 	  ];
 	  
-	  $scope.settingsList = [
-	     { text: "Private", checked: true },
-		  { text: "Public", checked: false }
-	   ];
+    
+	
 	  
 	  
 	  

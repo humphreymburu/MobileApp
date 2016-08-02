@@ -50,7 +50,7 @@ angular.module('starter.services', ['starter.utils'])
 })
 
 .factory('fireBaseUrl', function($firebase) {
-  var ref = new Firebase("https://glowing-fire-4410.firebaseio.com/");
+  var ref = new Firebase("");
   return {
     ref: function () {
       return ref;

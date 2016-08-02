@@ -4,38 +4,46 @@
       <div class="list events padding">
           <label class="item item-input item-floating-label">
               <span class="input-label">Event Name</span>
-              <input type="text" placeholder="Event Name" ng-model="e.name">
+              <input type="text" placeholder="Event Name" ng-model="data.nameEvent">
           </label>
+		  
 		  
           <label class="item item-input item-floating-label">
               <span class="input-label">Event Description</span>
-              <input type="text" placeholder="Event Description" ng-model="e.desc">
+              <textarea placeholder="Event Description" ng-model="data.desc" class = "item-text-wrap"></textarea>
           </label>
+		   <br/>
+		   <br/>
+          
+		  <label class="item item-input item-select">
+              <div class="input-label">
+                  <p>Event Type</p>
+              </div>
+		   <select ng-model="data.type" ng-model-options="{trackBy: '$value.id'}">
+		   	<option ng-value="item" ng-repeat="item in types">{{ item.type }}</option>
+			
+		   </select></label>
+		   <br/>
 		  
 		  
-          <label class="item item-input item-floating-label">
-              <span class="input-label">Event Date</span>
-              <input type="date" placeholder="Event Date" ng-model="e.date">
+		  
+          <label class="item item-input">
+             <div class="input-label">
+                  <p>Event Date</p>
+              </div>
+              <input type="date" placeholder="Event Date" ng-model="data.date">
           </label>
 		  
 		  
           <label class="item item-input item-floating-label">
               <span class="input-label">Event Location/Event</span>
-              <input type="text" placeholder="Location/Event" ng-model="e.venue">
-          </label>
-		  
+              <input type="text" placeholder="Location/Event" ng-model="data.venue">
+          </label>		  
 		
-          <label class="item item-input item-select">
-              <div class="input-label">
-                  <p>Event Type</p>
-              </div>
-		   <select ng-model="e.type" ng-model-options="{trackBy: '$value.id'}">
-		   	<option ng-value="item" ng-repeat="item in types">{{ item.type }}</option>
-			
-		   </select></label>
-		  
+         	   <br/>
+			   <br/>
 		
-          <button class="button button-block button-assertive ink" data-ink-color="#9DEAFF" data-ink-opacity="1" ng-click="submit()">
+          <button class="button button-block button-assertive ink" data-ink-color="#9DEAFF" data-ink-opacity="1" ng-click="addEvent()">
               Submit
           </button>
       </div>

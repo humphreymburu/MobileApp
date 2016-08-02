@@ -9805,3 +9805,6 @@ input::-ms-input-placeholder {
 
 .events p {
   font-weight: bold; }
+
+.input-label p {
+  padding-top: 8px; }
