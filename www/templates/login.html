@@ -9,6 +9,7 @@
 		 
  <div class="lists">
 	<div class="log">
+		 <form>
 		  <md-input-container>
 		             
 
@@ -20,10 +21,7 @@
 				  <br>
 				 
 		
-				 
-				<div ng-cloak ng-show="createMode">
-				<span class="input-label">Confirm pass</span>
-					<input placeholder="Confirm your password..." type="password" ng-model="data.confirm" hightlight-color="assertive" class="item item-input"></input>	</div>
+<div ng-cloak ng-show="createMode"><input placeholder="Confirm your password..." type="password" ng-model="data.confirm"  hightlight-color="assertive"  class="item item-input"></input>	</div>
 						 
 						 
 		  </md-input-container>
@@ -39,14 +37,15 @@
 		
 		
 			    <button  class="button button-full button-balanced ink" ng-click="login(data.email,data.pass)" ng-hide="createMode">Log In</button>
-			    <button class="button button-full button-assertive ink" ng-click="createMode = true" ng-hide="createMode">Register</button>
-			    <button class="button button-full button-assertive ink" ng-cloak ng-show="createMode" ng-click="createAccount()">Create Account</button>
-			    <button class="button button-full button-assertive ink" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
+			    <button class="button button-full button-light ink" ng-click="createMode = true" ng-hide="createMode">Register</button>
+			    <button class="button button-full button-light ink" ng-cloak ng-show="createMode" ng-click="createAccount()">Create Account</button>
+			    <button class="button button-full button-light ink" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
 
-			    <p ng-show="err" class="error">{{err}}</p>
+			    <p ng-show="error" class="error">{{error}}</p>
+				<p ng-show="errorMessage" class="error">{{errorMessage}}</p>
 			</div>
            
-
+</form>
 
 		<div class="button-bar social-login">
 		<button ng-click="faceSign()" class="button button-small button-border icon-left ion-social-facebook button-positive-900">Facebook</button> <br>          

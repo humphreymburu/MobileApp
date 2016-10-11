@@ -1,4 +1,4 @@
-angular.module('starter.services', ['starter.utils'])
+angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'])
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
@@ -56,5 +56,82 @@ angular.module('starter.services', ['starter.utils'])
       return ref;
     },
   }
-});
+})
+
+
+.factory('Loader', ['$ionicLoading', '$timeout','$rootScope','$ionicLoading', '$ionicPopup', function($ionicLoading, $ionicLoading, $ionicPopup, $timeout,$rootScope ) {
+       var LOADERAPI = {
+            showLoading: function(text) {
+               text = text || 'Loading...';
+               $ionicLoading.show({
+                    template: '<div class="loader"><svg class="circular"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></svg></div><br>' + text
+               });
+},
+           hideLoading: function() {
+               $ionicLoading.hide();
+},
+           toggleLoadingWithMessage: function(text, timeout) {
+               $rootScope.showLoading(text);
+               $timeout(function() {
+                   $rootScope.hideLoading();
+               }, timeout || 3000);
+           }
+};
+       return LOADERAPI;
+   }])
+
+   .factory('Events', function($rootScope, $firebaseArray, $firebaseAuth, $firebaseObject) {
+     
+	 $rootScope.userObj = $firebaseAuth();
+	  
+	 var firebaseUser =  $rootScope.userObj.$getAuth();	 
+	 
+	 
+	 console.log(firebaseUser);
+	 
+	 var eventsRef = new firebase.database().ref('users/' +  firebaseUser.uid + '/events');
+ 	  //var eventsInfo = $firebaseArray(eventsRef);
+
+    
+
+     //var eventRef = new firebase.database().ref('users/' + '/events');
+	
+
+     return {
+		 getEvents: getEvents,
+		 getEvent: getEvent
+		 
+     }
+     function getEvents() {
+         return $firebaseArray(eventsRef);        
+     }
+	 
+	 function getEvent(eventId) {
+		 return $firebaseObject(eventsRef.child(eventId)); 
+		 
+	 }
+   })
+
+
+
+
+
+
+
+
+
+ 
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+;
 

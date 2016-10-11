@@ -19,13 +19,20 @@
               <div class="input-label">
                   <p>Event Type</p>
               </div>
-		   <select ng-model="data.type" ng-model-options="{trackBy: '$value.id'}">
-		   	<option ng-value="item" ng-repeat="item in types">{{ item.type }}</option>
+			  
+			  
 			
-		   </select></label>
+			        <select ng-model="data.type" ng-model-options="{trackBy: '$value.id'}">
+			          <option ng-repeat="item in types" value="{{item.type}}">{{item.type}}</option>
+			        </select>
+			  
+			  
+	  		
+		  
+			
+		  </label>
 		   <br/>
-		  
-		  
+		
 		  
           <label class="item item-input">
              <div class="input-label">

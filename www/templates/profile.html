@@ -11,50 +11,37 @@
             <a ui-sref="app.eventCat" class="tab-item">
                 <i class="icon ion-calendar"></i> Events
             </a>
-			<a ui-sref="app.friends" class="tab-item">
-                <i class="icon ion-android-people"></i> Friends
+			<a ui-sref="app.categories" class="tab-item">
+                <i class="icon ion-android-people"></i> Categories
             </a>
             <a ui-sref="app.gallery" class="tab-item">
                 <i class="icon ion-images"></i> Photos
             </a>
         </div>
-		<p class="status good" ng-show="loggedIn">Hello! You are logged in with id {{loggedIn.email}}.</p>
+		
+		
+		<p class="status good" ng-show="loggedIn">Hello! You are logged in with id {{user.uid}}.</p>
 		<p class="status" ng-hide="loggedIn">Welcome. You are not <a href="#/login">logged in</a></p>
 		
 					
-        <h4 class="content padding single-padding-x"> My Upcoming Events</h4>
-        <div class="list animate-fade-slide-in-right">
-		<div class="card">
-		  <div class="item item-text-wrap">
-            <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-                <img src="img/tyrion.jpg">
-                <h2>Tyrion Lannister</h2>
-                <p>B.A.M.F. imp</p>
-                <i class="icon ion-chatbubble muted"></i>
+        <h4 class="content padding single-padding-x"> My Events</h4>
+        <div class="list">
+            <a class="item item-avatar item-icon-right"  ng-repeat="event in events | limitTo:limit" href="#/app/detail/{{event.$id}}">
+                <img src="img/jon-snow.jpg">
+                <h2>{{event.nameEvent}}</h2>
+				<p>
+					
+				
+					
+		         {{event.date | date:'medium'}}<br>
+				 {{event.desc | limitTo:letterLimit}}<br>
+				 {{event.venue}}
+		       </p>
+                 <i class="icon ion-ios-arrow-right"></i>
             </a>
-		  </div>
-		</div>
-		<div class="card">
-		  <div class="item item-text-wrap">
-            <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-                <img src="img/tyrion.jpg">
-                <h2>Tyrion Lannister</h2>
-                <p>B.A.M.F. imp</p>
-                <i class="icon ion-chatbubble muted"></i>
-            </a>
-		  </div>
-		</div>
+        </div>
 			
-			<div class="card">
-			  <div class="item item-text-wrap">
-	            <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-	                <img src="img/tyrion.jpg">
-	                <h2>Tyrion Lannister</h2>
-	                <p>B.A.M.F. imp</p>
-	                <i class="icon ion-chatbubble muted"></i>
-	            </a>
-			  </div>
-			</div>
+		
 			
 			
         </div>

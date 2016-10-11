@@ -1,5 +1,5 @@
 'use strict'
-angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova'])
+angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout) {
     // Form data for the login modal
@@ -86,7 +86,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 })
 
 
-.controller('LoginCtrl', function($scope, $timeout, $stateParams, ionicMaterialInk,  Auth, $state, fbutil, $firebaseAuth) {
+.controller('LoginCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk,  Auth, $state, fbutil, $firebaseAuth) {
     $scope.$parent.clearFabs();
      $timeout(function() {
          $scope.$parent.hideHeader();
@@ -96,7 +96,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
   $scope.faceSign = function() {
 
-	
+
 	var provider = new firebase.auth.FacebookAuthProvider();
 	   provider.addScope('email');
 	
@@ -119,13 +119,13 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	    var user = result.user;
 	  }).catch(function(error) {
 	    // Handle Errors here.
-	    var errorCode = error.code;
-	    var errorMessage = error.message;
+	    $scope.errorCode = error.code;
+	    $scope.errorMessage = error.message;
 	    // The email of the user's account used.
-	    var email = error.email;
+	    $scope.email = error.email;
 	    // The firebase.auth.AuthCredential type that was used.
-	    var credential = error.credential;
-		if (errorCode === 'auth/account-exists-with-different-credential') {
+	    $scope.credential = error.credential;
+		if ($scope.errorCode === 'auth/account-exists-with-different-credential') {
 		          alert('You have already signed up with a different auth provider for that email.');
 		          // If you are using multiple auth providers on your app you should handle linking
 		          // the user's accounts here.
@@ -137,6 +137,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
 	
 	 $state.go('app.profile');
+	 
 	
   }
   
@@ -144,7 +145,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
    $scope.twitterSign = function() {
-	   
+	  
 	    var provider = new firebase.auth.TwitterAuthProvider();
    	
 	 firebase.auth().signInWithRedirect(provider).then(function() {
@@ -195,7 +196,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
     $scope.login = function(email, pass) {
       $scope.err = null;
-    
+    //$rootScope.showLoading('Logging you in...');
 	
      var email = $scope.data.email;
      var pass = $scope.data.pass;
@@ -203,20 +204,34 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   	    Auth.$signInWithEmailAndPassword(email,pass)
   	   .then(function(firebaseUser) {
   	       console.log("Signed in as:", firebaseUser.uid);
-  	     $state.go('app.profile');
+		   $scope.data.email ='';
+		   $scope.data.pass = '';
+		   
+		 $state.go('app.profile');
+		
+		 
   	    }).catch(function(error) {
-  	       console.error("Authentication failed:", error);
+  	       //$scope.error = errorMessage(error);
+		   $scope.errorCode = error.code;
+		   $scope.errorMessage = error.message;
+		            // [START_EXCLUDE]
+		  if ($scope.errorCode === 'auth/wrong-password') {
+		              console.log('Wrong password.');
+		            } else {
+		              console.log($scope.errorMessage);
+		            }
   	    });
 	
 	
-	
-
+	 //$rootScope.hideLoading();
+     
 		
 	  
     };
 
     $scope.createAccount = function(email,pass) {
-      $scope.err = null;
+     // $rootScope.showLoading('Creating Account...');
+	  $scope.err = null;
       if( assertValidAccountProps() ) {
         var email = $scope.data.email;
         var pass = $scope.data.pass;
@@ -226,9 +241,9 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
             // authenticate so we have permission to write to Firebase
             return Auth.$signInWithEmailAndPassword(email,pass);
           })
-          .then(function(user) {
+          .then(function(firebaseUser) {
             // create a user profile in our data store
-			  var ref = firebase.database().ref('users/' + firebaseUse.uid);
+			  var ref = firebase.database().ref('users/' + firebaseUser.uid);
 			              return fbutil.handler(function(cb) {
 			                ref.set({email: email, name: name||firstPartOfEmail(email)}, cb);
 			              });
@@ -236,27 +251,35 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
           .then(function(/* user */) {
             // redirect to the account page
             $state.go('app.profile');
-          }, function(err) {
-            $scope.err = errMessage(err);
+			
+			
+          }).catch(function(error){
+            $scope.error = errorMessage(error);
+			//$rootScope.hideLoading();
+			//$rootScope.alert('<b><i class="icon ion-person"></i> Login error</b>', err);
           });
+		  
       }
+	 
+	 
     };
 
     function assertValidAccountProps() {
       if( !$scope.data.email ) {
-        $scope.err = 'Please enter an email address';
+        $scope.error = 'Please enter an email address';
       }
       else if( !$scope.data.pass || !$scope.data.confirm ) {
-        $scope.err = 'Please enter a password';
+        $scope.error = 'Please enter a password';
       }
       else if( $scope.data.createMode && $scope.data.pass !== $scope.data.confirm ) {
-        $scope.err = 'Passwords do not match';
+        $scope.error = 'Passwords do not match';
       }
-      return !$scope.err;
+      return !$scope.error;
+	  
     }
 
-    function errMessage(err) {
-      return angular.isObject(err) && err.code? err.code : err + '';
+    function errorMessage(error) {
+      return angular.isObject(error) && error.code? error.code : error + '';
     }
 
     function firstPartOfEmail(email) {
@@ -269,7 +292,43 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       var f = str.charAt(0).toUpperCase();
       return f + str.substr(1);
     }
+	 //$rootScope.hideLoading();
   })
+  
+  
+  .controller('categoriesCtrl', function($scope, $rootScope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+      $scope.$parent.setHeaderFab(false);
+	  
+      // Delay expansion
+      $timeout(function() {
+          $scope.isExpanded = true;
+          $scope.$parent.setExpanded(true);
+      }, 300);
+	   
+	  //$rootScope.hideLoading();
+	  
+      ionicMaterialInk.displayEffect();
+
+      ionicMaterialMotion.pushDown({
+          selector: '.push-down'
+      });
+      ionicMaterialMotion.fadeSlideInRight({
+          selector: '.animate-fade-slide-in .item'
+      });
+	  
+
+	  
+  })
+  
+  
+  
+  
+  
+  
   
   
   .controller('FriendsCtrl', function($scope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
@@ -291,7 +350,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       ionicMaterialInk.displayEffect();
   })
   
-  .controller('ProfileCtrl', function($scope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+  .controller('ProfileCtrl', function($scope, Events, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
       // Set Header
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
@@ -314,9 +373,60 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
       // Set Ink
       ionicMaterialInk.displayEffect();
+	 // $rootScope.hideLoading();
+	  
+	 // $scope.events = Events.getEvents();
+	  //console.log($scope.events);
+	  $scope.limit = 15;
+	  
+	  $scope.events = Events.getEvents();
+	  console.log($scope.events);
+	  
+	  
+	  
   })
+  
+  
+  
+  .controller('ProfileCtrl', function($scope, Events, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+      // Set Header
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = false;
+      $scope.$parent.setExpanded(false);
+      $scope.$parent.setHeaderFab(false);
 
-  .controller('ActivityCtrl', function($scope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+      // Set Motion
+      $timeout(function() {
+          ionicMaterialMotion.slideUp({
+              selector: '.slide-up'
+          });
+      }, 300);
+
+      $timeout(function() {
+          ionicMaterialMotion.fadeSlideInRight({
+              startVelocity: 3000
+          });
+      }, 700);
+
+      // Set Ink
+      ionicMaterialInk.displayEffect();
+	  //$rootScope.hideLoading();
+	  
+	 // $scope.events = Events.getEvents();
+	  //console.log($scope.events);
+	  $scope.limit = 15;
+	  
+	  $scope.events = Events.getEvents();
+	 
+	  
+	  
+	  
+  })
+  
+  
+
+  .controller('DetailCtrl', function($scope, Events, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -331,11 +441,24 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
       // Activate ink for controller
       ionicMaterialInk.displayEffect();
+	  
+		
+		
+	  var eventId = $stateParams.eventId;
+	  console.log(eventId);
+	  $scope.event = Events.getEvent(eventId);
+	  console.log($scope.event);
+	
+      
+	 
+	  
+	  
+	  
   })
 
 
 
-  .controller('AddEventCtrl', function($scope, Auth, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
+  .controller('AddEventCtrl', function($scope, Auth, Loader, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -357,7 +480,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   	$scope.data = {
   		"nameEvent" : null,
   		"desc"  : null,
-  		"type" : null,
+  	     "type" : null,
   		"date" : null,
 		"venue" : null
   	}
@@ -365,21 +488,55 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  
 	  
-	  var firebaseUser = Auth.$getAuth();
+	  $rootScope.firebaseUser = Auth.$getAuth();
 	  
-	  console.log("Signed in as:", firebaseUser.uid);
+	  console.log("Signed in as:", $rootScope.firebaseUser.uid);
 	  
-	  if(firebaseUser) {
-		  var eventsRef = new firebase.database().ref('users/' +  firebaseUser.uid + '/events');
+	  $scope.types = [
+		  { id: 1, type: 'Appearance'},
+		  { id: 2, type: 'Attraction'},
+		  { id: 3, type: 'Camp'},
+		  { id: 4, type: 'Concert'},
+		  { id: 5, type: 'Conference'},
+		  { id: 6, type: 'Convention'},
+		  { id: 7, type: 'Demonstration'},
+		  { id: 8, type: 'Dinner'},
+		  { id: 9, type: 'Festival'},
+		  { id: 10, type: 'Food Tasting'},
+		  { id: 11, type: 'Game'},
+		  { id: 12, type: 'Marathon'},
+		  { id: 13, type: 'Meeting'},
+		  { id: 14, type: 'Other'},
+		  { id: 15, type: 'Party'},
+		  { id: 16, type: 'Race'},
+		  { id: 17, type: 'Rally'},
+		  { id: 18, type: 'Screening'},
+		  { id: 19, type: 'Seminar'},
+		  { id: 20, type: 'Tour'},
+		  { id: 21, type: 'Festival'},
+		  { id: 22, type: 'Wine Tasting'},  	
+		  { id: 23, type: 'Training'},
+		  { id: 24, type: 'Tour'}  
+	  ];
+	  
+	
+	  
+	  
+	  
+	  if($rootScope.firebaseUser) {
+		  var eventsRef = new firebase.database().ref('users/' +  $rootScope.firebaseUser.uid + '/events');
 		  var eventsInfo = $firebaseArray(eventsRef);
 		  
-          
+		
+		  
 		  $scope.addEvent =  function(nameEvent,desc,type,date,venue) {
+			 //Loader.showLoading('Adding new event...');
+			 $rootScope.showLoading('Adding Event ...')
 			 
 			  var nameEvent = $scope.data.nameEvent;
 			  var desc  = $scope.data.desc;
-			  var type = $scope.data.venue;
-			  var date = $scope.data.date;
+			  var type = $scope.data.type;
+			  var date = $scope.data.date.getTime();
 			  var venue= $scope.data.venue;
 			 
 			  eventsInfo.$add ({
@@ -398,6 +555,8 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 				  
 				  var id = ref.key;
 				  console.log("added record with id " + id);
+				  
+				  $rootScope.hideLoading();
 			  });
 		  };
 	   }//user authenticated
@@ -440,30 +599,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  
 	  
-	  $scope.types = [
-		  { id: 1, type: 'Appearance'},
-		  { id: 2, type: 'Attraction'},
-		  { id: 3, type: 'Camp'},
-		  { id: 4, type: 'Concert'},
-		  { id: 5, type: 'Conference'},
-		  { id: 6, type: 'Convention'},
-		  { id: 7, type: 'Demonstration'},
-		  { id: 8, type: 'Dinner'},
-		  { id: 9, type: 'Festival'},
-		  { id: 10, type: 'Food Tasting'},
-		  { id: 11, type: 'Game'},
-		  { id: 12, type: 'Marathon'},
-		  { id: 13, type: 'Meeting'},
-		  { id: 14, type: 'Other'},
-		  { id: 15, type: 'Party'},
-		  { id: 16, type: 'Race'},
-		  { id: 17, type: 'Rally'},
-		  { id: 18, type: 'Screening'},
-		  { id: 19, type: 'Seminar'},
-		  { id: 20, type: 'Tour'},
-		  { id: 21, type: 'Festival'},
-		  { id: 22, type: 'Wine Tasting'}  	
-	  ];
+	 
 	  
     
 	
@@ -497,13 +633,13 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   .controller('eventCategoryCtrl', function($scope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
       $scope.$parent.showHeader();
-      //$scope.$parent.clearFabs();
+      $scope.$parent.clearFabs();
       $scope.isExpanded = true;
       $scope.$parent.setExpanded(true);
-     // $scope.$parent.setHeaderFab(false);
+     $scope.$parent.setHeaderFab(false);
 
       // Activate ink for controller
-     // ionicMaterialInk.displayEffect();
+      ionicMaterialInk.displayEffect();
 
       ionicMaterialMotion.pushDown({
           selector: '.push-down'
@@ -530,6 +666,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  $scope.create = function() {
 	      $state.go('app.addEvent');
 	  };
+
+
+
+
+
 
 
     

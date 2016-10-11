@@ -9794,17 +9794,35 @@ a.button {
   src: url(Roboto-Regular.ttf); }
 
 input::-webkit-input-placeholder {
-  color: red; }
+  color: fff; }
 
 input::-moz-placeholder {
-  color: red; }
+  color: #fff; }
 
 input::-ms-input-placeholder {
   /* IE10+ */
-  color: red; }
+  color: #fff; }
 
 .events p {
   font-weight: bold; }
 
 .input-label p {
   padding-top: 8px; }
+
+.error {
+  color: #fff; }
+
+h2 {
+  color: #F44336;
+  font-family: roboto; }
+
+.larger {
+  color: #F44336;
+  font-size: 20px;
+  margin-right: 2px; }
+
+.bolder {
+  font-weight: bold; }
+
+h1 {
+  color: #fff; }

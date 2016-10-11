@@ -1,0 +1,22 @@
+<ion-view view-title="Event Details">
+    <ion-content ng-class="{expanded:isExpanded}">
+       <div class="list card">
+	   <div class="item">
+	     <h2>{{event.nameEvent}}</h2>
+	   </div>
+
+	   <div class="item item-body">
+	     <img class="full-image" src="event.jpg">
+		  <p class="bolder"><i class="icon ion-calendar larger"></i>{{event.date | date:'medium'}}</p>
+		 <p class="bolder"><i class="icon ion-location larger"></i>{{event.venue}}</p>
+	     <p>
+	       {{event.desc}}
+	     </p>
+
+	     <p>
+	       <a href="#" class="subdued">1 Like</a>
+	       <a href="#" class="subdued">5 Comments</a>
+	     </p>
+	   </div> 
+    </ion-content>
+</ion-view>

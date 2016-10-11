@@ -6,8 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.controllers', 'starter.services', 'starter.utils', 'starter.config', 'starter.auth', 'ionic-material' , 'ngCordova'])
-
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $state, $timeout, $ionicLoading, $ionicPopup) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -19,6 +18,20 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
+		
+	   // $rootScope.showLoading = function(text) {
+	      //  $ionicLoading.show({
+	            //template: '<ion-spinner icon="bubbles" class="spinner-calm"></ion-spinner><br/>' + msg
+	           // template: '<div class="loader"><svg class="circular"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></svg></div><br>' + text
+	       // });
+	    //};
+
+	   // $rootScope.hideLoading = function() {
+	      //  $ionicLoading.hide();
+	    //};
+
+	    //  $rootScope.showLoading("Loading the app...");
+		
     });
 })
 
@@ -28,9 +41,8 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
 	Auth.$onAuthStateChanged(function(firebaseUser) {
 		//$rootScope.loggedIn = !!firebaseUser;
 		if (firebaseUser) {
-		 var userRef = firebase.database().ref('users/' + firebaseUser.uid);
-		 var userObj = $firebaseObject(userRef); 
-		 $rootScope.loggedIn = userObj;
+		
+		 $rootScope.loggedIn = !!firebaseUser;
 	    }  else {
 	     $rootScope.loggedIn = '';
 	    }	
@@ -165,6 +177,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
       })
 
 
+
 	  .state('app.addEvent', {
 	        url: '/addEvent',
 	        views: {
@@ -181,10 +194,44 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
 
 
 
+	  
+	  .state('app.detail', {
+	        url: '/detail/:eventId',
+	        views: {
+	          'menuContent' :{
+	            templateUrl: 'templates/detail.html',
+	            controller: 'DetailCtrl'
+	          },
+	          'fabContent': {
+	              templateUrl: '',
+	              controller: ''
+	          }
+	        }
+	      })
+
+		  
+
+
+	  .state('app.categories', {
+	        url: '/categories',
+	        views: {
+	          'menuContent' :{
+	            templateUrl: 'templates/categories.html',
+	            controller: 'categoriesCtrl'
+	          },
+	          'fabContent': {
+	              templateUrl: '',
+	              controller: ''
+	          }
+	        }
+	      })
+
+
+
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/profile');
+  $urlRouterProvider.otherwise('/app/login');
   
 
 });
