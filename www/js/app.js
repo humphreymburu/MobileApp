@@ -163,7 +163,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
   })
 
   .state('app.eventCat', {
-        url: '/eventCat',
+        url: '/eventCat/:eventType',
         views: {
           'menuContent' :{
             templateUrl: 'templates/eventCat.html',

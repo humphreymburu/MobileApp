@@ -26,7 +26,7 @@
 					
         <h4 class="content padding single-padding-x"> My Events</h4>
         <div class="list">
-            <a class="item item-avatar item-icon-right"  ng-repeat="event in events | limitTo:limit" href="#/app/detail/{{event.$id}}">
+            <a class="item item-avatar item-icon-right"  ng-repeat="event in events | filter: userId | limitTo:limit" href="#/app/detail/{{event.$id}}">
                 <img src="img/jon-snow.jpg">
                 <h2>{{event.nameEvent}}</h2>
 				<p>

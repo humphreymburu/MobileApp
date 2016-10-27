@@ -1,10 +1,21 @@
 <ion-view view-title="Events">
     <ion-content ng-class="{expanded:isExpanded}">
 		<div class="row responsive-sm">
-		  <div class="col">.col</div>
-		  <div class="col">.col</div>
-		  <div class="col">.col</div>
-		  <div class="col">.col</div>
+        <div class="list">
+            <a class="item item-avatar item-icon-right" ng-repeat="event in events | filter: type | limitTo:limit" href="#/app/detail/{{event.$id}}">
+                <img src="img/jon-snow.jpg">
+                <h2>{{event.nameEvent}}</h2>
+				<p>
+					
+				
+					
+		         {{event.date | date:'medium'}}<br>
+				 {{event.desc | limitTo:letterLimit}}<br>
+				 {{event.venue}}
+		       </p>
+                 <i class="icon ion-ios-arrow-right"></i>
+            </a>
+        </div>
 		</div>
     </ion-content>
 </ion-view>

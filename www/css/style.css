@@ -92,7 +92,7 @@ p {
 	margin-right: 2rem;
 	margin-left: 2rem;
 }
-
+/* ----- */
 
 .lists .item  {
     min-height: 42px;
@@ -115,6 +115,22 @@ p {
 	    z-index: 1;		
 		min-height: 45px;
 }
+
+.col {
+        width: 100%;
+}
+
+
+	
+.bismark { background-color: #406B7D  }
+.wild { background-color: #F64B72 }
+.green { background-color: #20D2BB }
+.bismark { background-color: #406B7D  }
+.turquoise { background-color: #55DAC9 }
+.helio { background-color: #C975F4 }
+.milan { background-color: #FFF985 }
+
+
 
 
 

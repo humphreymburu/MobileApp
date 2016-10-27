@@ -80,7 +80,9 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
        return LOADERAPI;
    }])
 
-   .factory('Events', function($rootScope, $firebaseArray, $firebaseAuth, $firebaseObject) {
+//current user profile events 
+
+ .factory('Events', function($rootScope, $firebaseArray, $firebaseAuth, $firebaseObject) {
      
 	 $rootScope.userObj = $firebaseAuth();
 	  
@@ -89,7 +91,8 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 	 
 	 console.log(firebaseUser);
 	 
-	 var eventsRef = new firebase.database().ref('users/' +  firebaseUser.uid + '/events');
+	 var eventsRef = new firebase.database().ref('events/');
+	 var eventsType = new firebase.database().ref('events/ + eventId/ + type');
  	  //var eventsInfo = $firebaseArray(eventsRef);
 
     
@@ -99,7 +102,7 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 
      return {
 		 getEvents: getEvents,
-		 getEvent: getEvent
+		 getEvent: getEvent,
 		 
      }
      function getEvents() {
@@ -110,6 +113,9 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 		 return $firebaseObject(eventsRef.child(eventId)); 
 		 
 	 }
+	 
+
+	 
    })
 
 

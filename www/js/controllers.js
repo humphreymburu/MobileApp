@@ -320,6 +320,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
           selector: '.animate-fade-slide-in .item'
       });
 	  
+       
+	  $scope.colors = ['bismark','wild', 'green', 'bismark', 'turquoise' , 'helio' , 'milan'];
+	
+
+
 
 	  
   })
@@ -385,10 +390,10 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  
   })
+
   
   
-  
-  .controller('ProfileCtrl', function($scope, Events, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+  .controller('ProfileCtrl', function($scope, Events, Auth,  $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
       // Set Header
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
@@ -419,7 +424,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  $scope.events = Events.getEvents();
 	 
+	 
+	  $rootScope.firebaseUser = Auth.$getAuth();
+	  $scope.userId = $rootScope.firebaseUser.uid;
 	  
+	 
 	  
 	  
   })
@@ -458,7 +467,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
 
 
-  .controller('AddEventCtrl', function($scope, Auth, Loader, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
+  .controller('AddEventCtrl', function($scope, Auth, Events, Loader, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -486,61 +495,55 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   	}
 	
 	  
-	  
+	
 	  
 	  $rootScope.firebaseUser = Auth.$getAuth();
 	  
 	  console.log("Signed in as:", $rootScope.firebaseUser.uid);
 	  
 	  $scope.types = [
-		  { id: 1, type: 'Appearance'},
-		  { id: 2, type: 'Attraction'},
-		  { id: 3, type: 'Camp'},
-		  { id: 4, type: 'Concert'},
-		  { id: 5, type: 'Conference'},
-		  { id: 6, type: 'Convention'},
-		  { id: 7, type: 'Demonstration'},
-		  { id: 8, type: 'Dinner'},
-		  { id: 9, type: 'Festival'},
-		  { id: 10, type: 'Food Tasting'},
-		  { id: 11, type: 'Game'},
-		  { id: 12, type: 'Marathon'},
-		  { id: 13, type: 'Meeting'},
-		  { id: 14, type: 'Other'},
-		  { id: 15, type: 'Party'},
-		  { id: 16, type: 'Race'},
-		  { id: 17, type: 'Rally'},
-		  { id: 18, type: 'Screening'},
-		  { id: 19, type: 'Seminar'},
-		  { id: 20, type: 'Tour'},
-		  { id: 21, type: 'Festival'},
-		  { id: 22, type: 'Wine Tasting'},  	
-		  { id: 23, type: 'Training'},
-		  { id: 24, type: 'Tour'}  
+		  { id: 1, type: 'Meetings & Conference'},
+		  { id: 2, type: 'Music'},
+		  { id: 3, type: 'Sports & Fitness'},
+		  { id: 4, type: 'Food & Lifestyle'},
+		  { id: 5, type: 'Fashion'},
+		  { id: 6, type: 'Other'},
+		  { id: 7, type: 'Science & Tech'}, 
+		  { id: 8, type: 'Parties'}, 
+		  { id: 9, type: 'Art'}, 
+		  { id: 10, type: 'Education'}, 
+		  { id: 12, type: 'Travel & Outdoor'}, 
+		  { id: 13, type: 'Education'}, 
+		  { id: 14, type: 'Training & Seminars'},
+		  { id: 15, type: 'Film & Media'} 
 	  ];
 	  
-	
+	  
 	  
 	  
 	  
 	  if($rootScope.firebaseUser) {
-		  var eventsRef = new firebase.database().ref('users/' +  $rootScope.firebaseUser.uid + '/events');
+		  var eventsRef = new firebase.database().ref('events/');
 		  var eventsInfo = $firebaseArray(eventsRef);
 		  
 		
+		  var user = $rootScope.firebaseUser.uid;
+		  console.log("Signed in as:", user);
 		  
 		  $scope.addEvent =  function(nameEvent,desc,type,date,venue) {
 			 //Loader.showLoading('Adding new event...');
-			 $rootScope.showLoading('Adding Event ...')
-			 
+			 //$rootScope.showLoading('Adding Event ...')
+			 //console.log("Signed in as:", firebaseUser.uid);
+			  console.log("Signed in as:", user);
 			  var nameEvent = $scope.data.nameEvent;
 			  var desc  = $scope.data.desc;
 			  var type = $scope.data.type;
 			  var date = $scope.data.date.getTime();
-			  var venue= $scope.data.venue;
+			  var venue = $scope.data.venue;
+			  var userId = $scope.user;
 			 
 			  eventsInfo.$add ({
-				  nameEvent,desc,type,date,venue
+				  nameEvent,desc,type,date,venue,user
 		         
 				  
 			  }).then(function(ref) {
@@ -550,7 +553,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 				  $scope.data.venue = '';
 				  $scope.data.date = '';
 				  $scope.data.venue = '';
-				  
+				  $scope.user = '';
 				  
 				  
 				  var id = ref.key;
@@ -631,7 +634,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
   
-  .controller('eventCategoryCtrl', function($scope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
+  .controller('eventCategoryCtrl', function($scope, Events, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -647,6 +650,44 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       ionicMaterialMotion.fadeSlideInRight({
           selector: '.animate-fade-slide-in .item'
       });
+	  
+	  
+	  
+	  
+	  var type = $stateParams.eventType;
+	//  console.log(type);
+	  $scope.type = type;
+	  console.log($scope.type);
+	
+	  
+	  $scope.type = { };
+	  $scope.type = $stateParams.eventType;
+	
+	  
+	  $scope.filters = { };
+	  $scope.events = Events.getEvents();
+	  
+	  $scope.types = [
+		  { id: 1, type: 'Meetings & Conference'},
+		  { id: 2, type: 'Music'},
+		  { id: 3, type: 'Sports & Fitness'},
+		  { id: 4, type: 'Food & Lifestyle'},
+		  { id: 5, type: 'Fashion'},
+		  { id: 6, type: 'Other'},
+		  { id: 7, type: 'Science & Tech'}, 
+		  { id: 8, type: 'Parties'}, 
+		  { id: 9, type: 'Art'}, 
+		  { id: 10, type: 'Education'}, 
+		  { id: 11, type: 'Travel & Outdoor'}, 
+		  { id: 12, type: 'Education'}, 
+		  { id: 13, type: 'Training & Seminars'},
+		  { id: 14, type: 'Film & Media'} 
+	  ];
+	  
+	  
+	  
+	  
+	  
 
   })
   
