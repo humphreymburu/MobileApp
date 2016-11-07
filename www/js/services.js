@@ -80,6 +80,17 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
        return LOADERAPI;
    }])
 
+
+
+
+
+
+
+
+
+
+
+
 //current user profile events 
 
  .factory('Events', function($rootScope, $firebaseArray, $firebaseAuth, $firebaseObject) {
@@ -119,25 +130,5 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
    })
 
 
-
-
-
-
-
-
-
- 
-	
-	
-	
-	
-
-
-
-
-
-
-
-
-;
+   ;
 

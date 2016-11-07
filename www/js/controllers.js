@@ -1,4 +1,4 @@
-'use strict'
+//'use strict'
 angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout) {
@@ -292,7 +292,6 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       var f = str.charAt(0).toUpperCase();
       return f + str.substr(1);
     }
-	 //$rootScope.hideLoading();
   })
   
   
@@ -465,9 +464,38 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
   })
 
+  .controller('DetailCtrl', function($scope, Events, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+      $scope.$parent.setHeaderFab('right');
+
+      $timeout(function() {
+          ionicMaterialMotion.fadeSlideIn({
+              selector: '.animate-fade-slide-in .item'
+          });
+      }, 200);
+
+      // Activate ink for controller
+      ionicMaterialInk.displayEffect();
+	  
+		
+		
+	  var eventId = $stateParams.eventId;
+	  console.log(eventId);
+	  $scope.event = Events.getEvent(eventId);
+	  console.log($scope.event);
+	
+      
+	 
+	  
+	  
+	  
+  })
 
 
-  .controller('AddEventCtrl', function($scope, Auth, Events, Loader, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
+  .controller('AddEventCtrl', function($scope, Auth, Events, Loader, $ionicSlideBoxDelegate, $ionicPlatform, $cordovaCamera, $cordovaImagePicker, $cordovaFile, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $q, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -484,6 +512,15 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
       // Activate ink for controller
       ionicMaterialInk.displayEffect();
+	  
+	  
+	  
+	  $scope.processForm = function() {
+	          console.log('awesome!');
+	      };  
+	  
+	  
+	  
 	  
 	  
   	$scope.data = {
@@ -518,98 +555,258 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		  { id: 15, type: 'Film & Media'} 
 	  ];
 	  
-	  
-	  
-	  
-	  
-	  if($rootScope.firebaseUser) {
-		  var eventsRef = new firebase.database().ref('events/');
-		  var eventsInfo = $firebaseArray(eventsRef);
-		  
-		
-		  var user = $rootScope.firebaseUser.uid;
-		  console.log("Signed in as:", user);
-		  
-		  $scope.addEvent =  function(nameEvent,desc,type,date,venue) {
-			 //Loader.showLoading('Adding new event...');
-			 //$rootScope.showLoading('Adding Event ...')
-			 //console.log("Signed in as:", firebaseUser.uid);
-			  console.log("Signed in as:", user);
-			  var nameEvent = $scope.data.nameEvent;
-			  var desc  = $scope.data.desc;
-			  var type = $scope.data.type;
-			  var date = $scope.data.date.getTime();
-			  var venue = $scope.data.venue;
-			  var userId = $scope.user;
-			 
-			  eventsInfo.$add ({
-				  nameEvent,desc,type,date,venue,user
-		         
-				  
-			  }).then(function(ref) {
-				  
-				  $scope.data.nameEvent = '';
-				  $scope.data.desc = '';
-				  $scope.data.venue = '';
-				  $scope.data.date = '';
-				  $scope.data.venue = '';
-				  $scope.user = '';
-				  
-				  
-				  var id = ref.key;
-				  console.log("added record with id " + id);
-				  
-				  $rootScope.hideLoading();
-			  });
-		  };
-	   }//user authenticated
-	  
-	  
-	  
-	  
-	  
-   	document.addEventListener("deviceready", function () {
-   	  $scope.upload = function() {
-   	          var options = {
-   	              quality : 75,
-   	              destinationType : Camera.DestinationType.FILE_URI,
-   	              sourceType : Camera.PictureSourceType.PHOTOLIBRARY,
-   	              allowEdit : true,
-   	              encodingType: Camera.EncodingType.JPEG,
-   	              popoverOptions: CameraPopoverOptions,
-   	              targetWidth: 500,
-   	              targetHeight: 500,
-   	              saveToPhotoAlbum: false
-   	          };
-	          
-   			  $cordovaCamera.getPicture(options).then(function(imageData) {
-   			        //var image = document.getElementById('myImage');
-   			        $scope.pic= "data:image/jpeg;base64," + imageData;
-   			        
-					//savePic(imageData);
-				  
-				  
-				  }, function(err) {
-   			        // error
-					  console.error(err);
-   			      });	  
-   	      }	  
-   	  }, false);
-	
-	  
-	  
-	  
-	  
-	  
-	  
 	 
+			 
+			
+			 $scope.disableSwipe = function() {
+			     $ionicSlideBoxDelegate.enableSlide(false);
+			   };
+
 	  
-    
+	  
+		  //if($rootScope.firebaseUser) {
+			  
+
+			  
+			  var eventsRef = new firebase.database().ref('events/');
+			  var eventsInfo = $firebaseArray(eventsRef);
+	  
+	
+			  var user = $rootScope.firebaseUser.uid;
+			  console.log("Signed in as:", user);
 	
 	  
+	     
+		    
+		  /** 
+		      *  from documentation:
+		      *  https://firebase.google.com/docs/storage/web/upload-files
+		      * 
+		      * This function returns a promise now to better process the
+		      * image data.
+		      */
+		     function saveToFirebase(_imageBlob, _filename) {
+
+		       return $q(function (resolve, reject) {
+		         // Create a root reference to the firebase storage
+		         var storageRef = firebase.storage().ref();
+
+		         // pass in the _filename, and save the _imageBlob
+		         var uploadTask = storageRef.child('images/' + _filename).put(_imageBlob);
+
+		         // Register three observers:
+		         // 1. 'state_changed' observer, called any time the state changes
+		         // 2. Error observer, called on failure
+		         // 3. Completion observer, called on successful completion
+		         uploadTask.on('state_changed', function (snapshot) {
+		           // Observe state change events such as progress, pause, and resume
+		           // See below for more detail
+		         }, function (error) {
+		           // Handle unsuccessful uploads, alert with error message
+		           alert(error.message)
+		           reject(error)
+		         }, function () {
+		           // Handle successful uploads on complete
+		           var downloadURL = uploadTask.snapshot.downloadURL;
+
+		           // when done, pass back information on the saved image
+		           resolve(uploadTask.snapshot)
+		         });
+		       });
+		     }
+
+
+		     function saveReferenceInDatabase(_snapshot) {
+		      
+			  var dataToSave =_snapshot.downloadURL;
+			  console.log("url", dataToSave);
+			  
+		
+		
+		
+		
+			  $rootScope.getUrl = _snapshot.downloadURL;
+			  console.log("tes",  $rootScope.getUrl);
+			  
+			  return dataToSave;
+				 	
+			  
+		       // see information in firebase documentation on storage snapshot and metaData
+		        // url to access file
+		     }
+
+		     /** 
+		      * copied directly from documentation
+		      * http://ngcordova.com/docs/plugins/imagePicker/
+		      */
+		     $scope.doGetImage = function () {
+		       var options = {
+		         maximumImagesCount: 1, // only pick one image
+		         width: 800,
+		         height: 800,
+		         quality: 80
+		       };
+
+		       var fileName, path;
+
+		       $cordovaImagePicker.getPictures(options)
+		         .then(function (results) {
+		           console.log('Image URI: ' + results[0]);
+
+		           // lets read the image into an array buffer..
+		           // see documentation:
+		           // http://ngcordova.com/docs/plugins/file/
+		           fileName = results[0].replace(/^.*[\\\/]/, '');
+
+		           // modify the image path when on Android
+		           if ($ionicPlatform.is("android")) {
+		             path = cordova.file.cacheDirectory
+		           } else {
+		             path = cordova.file.tempDirectory
+		           }
+
+		           return $cordovaFile.readAsArrayBuffer(path, fileName);
+		         }).then(function (success) {
+		           // success - get blob data
+		           var imageBlob = new Blob([success], { type: "image/jpeg" });
+
+		           // missed some params... NOW it is a promise!!
+		           return saveToFirebase(imageBlob, fileName);
+		         }).then(function (_responseSnapshot) {
+		           // we have the information on the image we saved, now 
+		           // let's save it in the realtime database
+		           return saveReferenceInDatabase(_responseSnapshot)
+		         }).then(function (_response) {
+					 
+					 //$ionicLoading.show({
+					      // template: 'Uploading...'
+					    // });
+					 
+		           alert("Saved Successfully!!")
+		         }, function (error) {
+		           // error
+		           console.log(error)
+		         });
+		     }
+			  
+			  
+				
+				
+				
+				
+			
+			
+			
+			
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+	
+			  
 	  
+			  //console.log("testo", $scope.fileUrl);
+	  
+			  $scope.addEvent =  function() {
+				 //Loader.showLoading('Adding new event...');
+				 //$rootScope.showLoading('Adding Event ...')
+				 //console.log("Signed in as:", firebaseUser.uid);
+				  console.log("Signed in as:", user);
+				  //$scope.data = {};
+				  //if(stepOne.$valid) {
+				 
+				   //var nameEvent = $scope.data.nameEvent;
+				  // var desc  = $scope.data.desc;
+				   //var type = $scope.data.type;
+				   //var date = $scope.data.date;
+				  // var venue = $scope.data.venue;
+				   //var user = $scope.user;
+		 
+				
+				
+				   var url = $rootScope.getUrl;
+				
+				console.log("tesp", url);
+		           
+		 
+				 eventsInfo.$add ({
+					  nameEvent: $scope.data.nameEvent,
+					  desc: $scope.data.desc,
+					  type: $scope.data.type,
+					  date: $scope.data.date.getTime(),
+					  venue: $scope.data.venue,
+					  user: $rootScope.firebaseUser.uid,
+					 fileUrl: $rootScope.getUrl
+					  //meta: $scope.meta
+		 
+		 
+				 }).then(function(ref) {
+			  
+					  $scope.data.nameEvent = '';
+					  $scope.data.desc = '';
+					  $scope.data.venue = '';
+					  $scope.data.date = '';
+					  $scope.data.venue = '';
+					  $scope.user = '';
+					  $rootScope.getUrl = '';
+			  
+			  
+					  var id = ref.key;
+					  console.log("added record with id " + id);
+					 
+					 
+					
+			  
+					  //$rootScope.hideLoading();
+				  });
+				//}; 
+			  };
+		  // }//user authenticated
+  
+	  
+		 $scope.next = function() {
+		     $ionicSlideBoxDelegate.next();
+		   };
+		   $scope.previous = function() {
+		     $ionicSlideBoxDelegate.previous();
+		   };
+ 
 	  
   })
+
+
+
+
+  .controller('AddPhotoCtrl', function($scope, $timeout, ionicMaterialMotion, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $q, $timeout, ionicMaterialMotion, ionicMaterialInk, $firebaseAuth) {
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+      $scope.$parent.setHeaderFab(false);
+
+      // Activate ink for controller
+      ionicMaterialInk.displayEffect();
+
+      ionicMaterialMotion.pushDown({
+          selector: '.push-down'
+      });
+      ionicMaterialMotion.fadeSlideInRight({
+          selector: '.animate-fade-slide-in .item'
+      });
+	  
+	  
+	  
+	  
+	  
+
+  })
+  
+
+
 
 
 
