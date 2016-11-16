@@ -495,7 +495,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   })
 
 
-  .controller('AddEventCtrl', function($scope, Auth, Events, Loader, $ionicSlideBoxDelegate, $ionicPlatform, $cordovaCamera, $cordovaImagePicker, $cordovaFile, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $q, $timeout, ionicMaterialMotion, ionicMaterialInk, $cordovaCamera, $firebaseAuth) {
+  .controller('AddEventCtrl', function($scope, Auth, Events, Loader, $ionicSlideBoxDelegate, $ionicPlatform, $cordovaCamera, $cordovaImagePicker, $cordovaFile, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $q, $timeout, ionicMaterialMotion, ionicMaterialInk,  $firebaseAuth) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -521,7 +521,42 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  
 	  
-	  
+		  $scope.disableTap = function() {
+		                  var container = document.getElementsByClassName('pac-container');
+		                  angular.element(container).attr('data-tap-disabled', 'true');
+		                  var backdrop = document.getElementsByClassName('backdrop');
+		                  angular.element(backdrop).attr('data-tap-disabled', 'true');
+		                  angular.element(container).on("click", function() {
+		                      document.getElementById('pac-input').blur();
+		                  });
+		              };
+  
+  
+			
+			
+					 /** var vm = this;
+					    $scope.placeChanged = function() {
+					      vm.place = this.getPlace();
+						  
+						  $scope.data.location = vm.place.geometry.location;
+					      console.log('location', vm.place.geometry.location);
+					    } 	**/		
+					  
+  
+  
+  
+					 console.log($scope.details);
+  
+  
+			        
+				 
+  
+  
+  
+  
+     
+  
+  
 	  
   	$scope.data = {
   		"nameEvent" : null,
@@ -690,22 +725,18 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		     }
 			  
 			  
-				
-				
+			 
 				
 				
 			
+			  
 			
 			
-			
 			  
 			  
 			  
 			  
-			  
-			  
-			  
-			  
+		    
 	
 			  
 	  
@@ -725,13 +756,19 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 				   //var date = $scope.data.date;
 				  // var venue = $scope.data.venue;
 				   //var user = $scope.user;
-		 
+		            
+					
+				   
 				
+					
+				 
+					
 				
 				   var url = $rootScope.getUrl;
 				
 				console.log("tesp", url);
-		           
+				
+		       
 		 
 				 eventsInfo.$add ({
 					  nameEvent: $scope.data.nameEvent,
@@ -740,10 +777,12 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 					  date: $scope.data.date.getTime(),
 					  venue: $scope.data.venue,
 					  user: $rootScope.firebaseUser.uid,
-					 fileUrl: $rootScope.getUrl
+					 fileUrl: $rootScope.getUrl,
+					 lat: $scope.data.latitude,
+					 lng: $scope.data.longitude
 					  //meta: $scope.meta
 		 
-		 
+	
 				 }).then(function(ref) {
 			  
 					  $scope.data.nameEvent = '';

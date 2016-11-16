@@ -46,8 +46,17 @@
 		  
 		  
   	             <label class="item item-input item-floating-label">
-  	                 <span class="input-label">Event Location/Event</span>
-  	                 <input type="text" placeholder="Location/Event" ng-model="data.venue">
+  	                 <span class="input-label">Event Locattion</span>
+  	              
+				    <div>selection is: {{data.venue}}</div>
+				    <div>details object is: {{chosenPlaceDetails}}</div>
+					<div>{{data.latitude}} and {{longitude}}</div>
+<div><input type="text" ng-model="data.venue" details="chosenPlaceDetails" lat="data.latitude" lng="data.longitude" placeholder="Search Location" data-tap-disabled="true" ng-change='disableTap()' googleplace/></div>
+				
+				  <input type="hidden" placeholder="Latitude..." ng-model="data.latitude">
+		
+                  <input type="hidden" placeholder="Longitude..." ng-model="data.latitude">
+				 
   	             </label>		  
 		
   	            	   <br/>

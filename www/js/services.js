@@ -130,5 +130,121 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
    })
 
 
+
+
+
+
+   .service('Map', function() {
+    
+       this.initMap = function() {
+         var mapOptions = {
+         center: { lat: -1.312694, lng: 36.733400 },  
+         zoom: 13,
+         disableDefaultUI: true, // To remove default UI from the map view
+         scrollwheel: false
+       }
+
+       this.map = new google.maps.Map(document.getElementById('map'),
+                   mapOptions);
+
+       this.input = /** @type {HTMLInputElement} */ (
+                   document.getElementById('pac-input'));
+
+               // Create the autocomplete helper, and associate it with
+               // an HTML text input box.
+       this.autocomplete = new google.maps.places.Autocomplete(input);
+               autocomplete.bindTo('bounds', map);
+
+               map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+       this.infowindow = new google.maps.InfoWindow();
+
+       this.marker = new google.maps.Marker({
+                   map: map
+               });
+
+   google.maps.event.addListener(marker, 'click', function() {
+                   infowindow.open(map, marker);
+               });
+
+               // Get the full place details when the user selects a place from the
+               // list of suggestions.
+               google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                   infowindow.close();
+                   var place = autocomplete.getPlace();
+                   //var latitude = place.geometry.location.lat();
+                   //var lontitude = place.geometry.location.lng();
+
+
+
+                   if (!place.geometry) {
+                        console.log("Autocomplete's returned place contains no geometry");
+                       return;
+                   }
+
+                   if (place.geometry.viewport) {
+                       map.fitBounds(place.geometry.viewport);
+                   } else {
+                       map.setCenter(place.geometry.location);
+                       map.setZoom(17);
+                   }
+
+                   // Set the position of the marker using the place ID and location.
+                   marker.setPlace( /** @type {!google.maps.Place} */ ({
+                       placeId: place.place_id,
+                       location: place.geometry.location,
+                   }));
+
+            
+
+                   marker.setVisible(true);
+
+                   infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+                       'Place ID: ' + place.name + '<br>' +
+                         'location: ' + place.geometry.location + '<br>' +
+                       place.formatted_address + '</div>');
+                   infowindow.open(map, marker);
+               });
+
+
+     this.lat =  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+              
+                   var place = autocomplete.getPlace();
+              
+                   var cords = {};
+                   lat = place.geometry.location.lat();
+                  console.log(lat);
+               });
+
+
+     this.lng =  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+              
+                   var place = autocomplete.getPlace();
+              
+               
+                   lng = place.geometry.location.lng();
+                  console.log(lng);
+               });
+
+
+           }
+
+
+
+
+
+
+        
+
+           // Run the initialize function when the window has finished loading.
+           google.maps.event.addDomListener(window, 'load', this.initMap);
+
+   })
+
+
+
+
+
+
    ;
 
