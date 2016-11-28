@@ -219,3 +219,71 @@ font-family: Roboto;
 font-size: 13px;
 font-weight: 300;
 }
+
+.expand {
+  top: 150px !important;
+}
+.bar-subheader {
+	height: 50px !important;
+    top: 75px !important;
+}	
+
+.bar-subheader.tab-item {
+    padding: 15px !important;
+}	
+
+.tab-item.segment {
+	font-weight: 600 !important;
+	font-size: 15px !important;	
+	padding: 15px !important;
+}
+
+	
+.bar-subheader.tabs.tabs-light {
+    border: none;	
+}
+
+.item p {
+    line-height: 18px;
+}	
+
+.slider-slide h3{
+color:#fff;
+margin-top:10px;
+}
+.scroll{
+height:100%;
+}
+ .tabbed-slidebox .tsb-icons:after{
+display:none !important;
+}
+.scroll-view.scroll-x {
+    overflow-x: hidden !important;  /* default value is 'scroll' */
+}
+
+.scroll-view.scroll-y {
+overflow-y: hidden !important;
+}
+.scroll-bar-indicator
+{
+	display: none !important;
+}
+	
+.bar.bar-header.expanded, .expanded .bar.bar-header {
+	height: 50px !important;
+}	
+
+.tabbed-slidebox .tsb-icons .scroll a {
+    width: auto;
+    font-size: 1.1em !important;
+    line-height: 2em !important;
+}
+
+.tabbed-slidebox .tsb-icons .scroll a.active {
+    border-bottom: 3px solid #B71C1C;
+}	
+	
+	
+.tabbed-slidebox .tsb-icons .scroll a {
+    margin: 0 20px !important;
+}

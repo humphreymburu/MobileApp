@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.controllers', 'starter.services', 'starter.utils', 'starter.config', 'starter.auth', 'ionic-material' , 'ngCordova', 'ngMessages', 'ngAnimate', 'ui.router'])
+angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox', 'starter.controllers', 'starter.services', 'starter.utils', 'starter.config', 'starter.auth', 'ionic-material' , 'ngCordova', 'ngMessages', 'ngAnimate', 'ui.router','angularGeoFire'])
 .run(function($ionicPlatform, $rootScope, $state, $timeout, $ionicLoading, $ionicPopup) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -177,6 +177,30 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
       })
 
 
+	  .state('app.eventNear', {
+	        url: '/eventCat/:eventType',
+	        views: {
+	          'menuContent' :{
+	            templateUrl: 'templates/eventNear.html',
+	            controller: 'eventCategoryCtrl'
+	          },
+	          'fabContent': {
+	              templateUrl: '',
+	              controller: ''
+	          }
+	        }
+	      })
+
+
+
+
+
+
+
+
+
+
+
 
 	  .state('app.addEvent', {
 	        url: '/addEvent',
@@ -191,6 +215,23 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
 	          }
 	        }
 	      })
+
+
+
+		  .state('app.location', {
+		        url: '/location',
+		        views: {
+		          'menuContent' :{
+		            templateUrl: 'templates/location.html',
+		            controller: 'locationCtrl'
+		          },
+		          'fabContent': {
+		              templateUrl: '',
+		              controller: ''
+		          }
+		        }
+		      })
+
 
 
 
@@ -250,6 +291,23 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
 
 
 
+		  .state('tab', {
+		      url: '/tab',
+		      abstract: true,
+		      controller: 'tabsCtrl',
+		      templateUrl: 'templates/tabs.html'
+		  })
+
+
+
+
+
+
+
+
+
+
+
 
 
   // if none of the above states are matched, use this as the fallback
@@ -257,87 +315,6 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
   
 
 })
-
-
-.directive('googleplacez', function() {
-    return {
-        require: 'ngModel',
-        link: function(scope, element, attrs, model) {
-            var options = {
-                types: [],
-				componentRestrictions: {
-				      country: 'KE'
-				    }
-            };
-            scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
-
-            google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
-				var geoComponents = scope.gPlace.getPlace();
-				var latitude = geoComponents.geometry.location.lat();
-				                var longitude = geoComponents.geometry.location.lng();
-				                var addressComponents = geoComponents.address_components;
-				                
-
-
-								addressComponents = addressComponents.filter(function(component){
-								                    switch (component.types[0]) {
-								                        case "locality": // city
-								                            return true;
-								                        case "administrative_area_level_1": // state
-								                            return true;
-								                        case "country": // country
-								                            return true;
-								                        default:
-								                            return false;
-								                    }
-								                }).map(function(obj) {
-								                    return obj.long_name;
-								                });
-
-								                addressComponents.push(latitude, longitude);
-				                
-			   
-			   
-			   
-			   
-			   
-			   
-			    scope.$apply(function() {
-					scope.details = addressComponents;
-                    model.$setViewValue(element.val());               
-                });
-            });
-        }
-    };
-})
-
-
-
-
-.directive('googleplacey', function() {
-    return {
-        require: 'ngModel',
-        scope: {
-            ngModel: '=',
-            details: '=?'
-        },
-        link: function(scope, element, attrs, model) {
-            var options = {
-                types: [],
-                componentRestrictions: {}
-            };
-            scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
-
-            google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
-                scope.$apply(function() {
-                    scope.details = scope.gPlace.getPlace();
-                    model.$setViewValue(element.val());                
-                });
-            });
-        }
-    };
-})
-
 
 
 .directive('googleplace', [ function() {
@@ -352,7 +329,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'starter.con
         link: function(scope, element, attrs, model) {
             var options = {
                 types: [],
-                componentRestrictions: {}
+                componentRestrictions: {country: 'KE'}
             };
 
             scope.gPlace = new google.maps.places.Autocomplete(element[0], options);

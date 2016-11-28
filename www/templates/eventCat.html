@@ -1,5 +1,75 @@
-<ion-view view-title="Events">
-    <ion-content ng-class="{expanded:isExpanded}">
+      <ion-view title="Events">
+	  
+        <ion-content scroll="false" overflow-scroll="false" ng-class="{expanded:$scope.isExpanded}">
+          	<tab-slide-box>
+			    	<div class="tsb-icons">
+			    		<div class="tsb-ic-wrp">
+							<ion-scroll scrollbar-x="false" scrollbar-y="false" direction="x" class="tsb-hscroll">
+							<a href="javascript:;" class="ion-model-s1">Upcoming</a>
+							<a href="javascript:;" class="ion-heart1">NearBy</a>
+							<a href="javascript:;" class="ion-person1">Trending</a>
+							</ion-scroll>
+						</div>
+			    	</div>
+			        <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
+			            <ion-slide>
+			                <h3>Nearby </h3>
+							
+							<div class="row responsive-sm" ng-controller="eventCategoryCtrl">
+					        <div class="list">
+					            <a class="item item-avatar item-icon-right" ng-repeat="event in events | filter: type | limitTo:limit" href="#/app/detail/{{event.$id}}">
+					                <img src="img/jon-snow.jpg">
+					                <h2>{{event.nameEvent}}</h2>
+									<p>
+					
+				
+					
+							         {{event.date | date:'medium'}}<br>
+									 {{event.desc | limitTo:letterLimit}}<br>
+									 {{event.venue}}
+							       </p>
+					                 <i class="icon ion-ios-arrow-right"></i>
+					            </a>
+					        </div>
+							</div>
+							
+							
+			            </ion-slide>
+			            <ion-slide>
+			                <h3>upcoming</h3>
+							
+							<div class="row responsive-sm" ng-controller="eventNearCtrl">
+					        <div class="list">
+					            <a class="item item-avatar item-icon-right" ng-repeat="near in filteredEvents | limitTo:limit track by $index" href="#/app/detail/{{event.$id}}">
+					                <img src="img/jon-snow.jpg">
+					                <h2>{{near.nameEvent}}</h2>
+									<p>
+					
+				
+					
+							         {{near.date | date:'medium'}}<br>
+									 {{near.desc | limitTo:letterLimit}}<br>
+									 {{near.venue}}
+								
+							       </p>
+					                 <i class="icon ion-ios-arrow-right"></i>
+					            </a>
+					        </div>
+							</div>
+							
+							
+			            </ion-slide>
+			            <ion-slide>
+			                <h3>Trending</h3>
+			            </ion-slide>
+			        </ion-slide-box>
+          	</tab-slide-box>
+        </ion-content>
+      </ion-view>
+
+
+	
+<!--<ion-content ng-class="{expanded:isExpanded}" class="expand">
 		<div class="row responsive-sm">
         <div class="list">
             <a class="item item-avatar item-icon-right" ng-repeat="event in events | filter: type | limitTo:limit" href="#/app/detail/{{event.$id}}">
@@ -18,4 +88,10 @@
         </div>
 		</div>
     </ion-content>
-</ion-view>
+	-->
+	
+	
+	
+
+	
+

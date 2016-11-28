@@ -133,6 +133,31 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 
 
 
+   .factory('Geos', function($rootScope, $firebaseArray, $firebaseAuth, $firebaseObject) {
+      
+	 var firebaseRef = firebase.database().ref('locations');
+	 var geoFire = new GeoFire(firebaseRef);
+
+	// var locationsRef = geoFire.ref(); 
+	 
+	 return geoFire;
+	 
+
+	 
+     })
+
+
+
+
+
+
+
+
+
+
+
+
+
 
    .service('Map', function() {
     

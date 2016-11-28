@@ -1,0 +1,21 @@
+<ion-view view-title="Location">
+    <ion-content ng-class="{expanded:isExpanded}">
+	    <div class="list">
+	      <div class="item item-text-wrap">
+			 <h1 align="center">Location Access</h1> 
+	        <h2>Set your current location to get personalized recommendations, it is only accessed by pressing the button below.</h2>
+	      </div>
+	      <div class ="button-bar events-button padding">
+		  
+		 
+          <button class="button button-assertive ink" data-ink-color="#9DEAFF" data-ink-opacity="1" ng-click="useGeolocation()"> Use Current Location
+          </button>
+	  </div>
+	<p>Latitude: {{lat}}<br/>
+		Longitude: {{lng}}</p>
+	  
+	    </div>
+		
+		
+    </ion-content>
+

@@ -1,5 +1,5 @@
 //'use strict'
-angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services'])
+angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services', 'angularGeoFire'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout) {
     // Form data for the login modal
@@ -335,7 +335,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
   
-  .controller('FriendsCtrl', function($scope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
+  .controller('tabsCtrl', function($scope, $stateParams, $ionicSlideBoxDelegate, $timeout, ionicMaterialInk, ionicMaterialMotion) {
       // Set Header
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
@@ -348,10 +348,14 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       }, 300);
 
       // Set Motion
-      ionicMaterialMotion.fadeSlideInRight();
+      //ionicMaterialMotion.fadeSlideInRight();
 
       // Set Ink
-      ionicMaterialInk.displayEffect();
+      //ionicMaterialInk.displayEffect();
+	  
+	  
+	
+	  
   })
   
   .controller('ProfileCtrl', function($scope, Events, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
@@ -464,38 +468,10 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
   })
 
-  .controller('DetailCtrl', function($scope, Events, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
-      $scope.$parent.showHeader();
-      $scope.$parent.clearFabs();
-      $scope.isExpanded = true;
-      $scope.$parent.setExpanded(true);
-      $scope.$parent.setHeaderFab('right');
-
-      $timeout(function() {
-          ionicMaterialMotion.fadeSlideIn({
-              selector: '.animate-fade-slide-in .item'
-          });
-      }, 200);
-
-      // Activate ink for controller
-      ionicMaterialInk.displayEffect();
-	  
-		
-		
-	  var eventId = $stateParams.eventId;
-	  console.log(eventId);
-	  $scope.event = Events.getEvent(eventId);
-	  console.log($scope.event);
-	
-      
-	 
-	  
-	  
-	  
-  })
+ 
 
 
-  .controller('AddEventCtrl', function($scope, Auth, Events, Loader, $ionicSlideBoxDelegate, $ionicPlatform, $cordovaCamera, $cordovaImagePicker, $cordovaFile, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $q, $timeout, ionicMaterialMotion, ionicMaterialInk,  $firebaseAuth) {
+  .controller('AddEventCtrl', function($scope, Auth, Events, Geos, Loader, $ionicSlideBoxDelegate, $ionicPlatform, $cordovaCamera, $cordovaImagePicker, $cordovaFile, $ionicPopup, $rootScope, $firebaseArray, $firebaseObject, $stateParams, $q, $timeout, ionicMaterialMotion, ionicMaterialInk,  $firebaseAuth) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -545,7 +521,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
   
-					 console.log($scope.details);
+					
   
   
 			        
@@ -570,6 +546,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
 	  
 	  $rootScope.firebaseUser = Auth.$getAuth();
+
 	  
 	  console.log("Signed in as:", $rootScope.firebaseUser.uid);
 	  
@@ -762,13 +739,13 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 				
 					
 				 
-					
-				
+				  
 				   var url = $rootScope.getUrl;
 				
 				console.log("tesp", url);
 				
-		       
+		        //var geoRef = Geos.geoFire;
+				//console.log(geoRef);
 		 
 				 eventsInfo.$add ({
 					  nameEvent: $scope.data.nameEvent,
@@ -777,11 +754,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 					  date: $scope.data.date.getTime(),
 					  venue: $scope.data.venue,
 					  user: $rootScope.firebaseUser.uid,
-					 fileUrl: $rootScope.getUrl,
-					 lat: $scope.data.latitude,
-					 lng: $scope.data.longitude
-					  //meta: $scope.meta
-		 
+				      lat : $scope.data.latitude,
+				      lng: $scope.data.longitude
+					// fileUrl: $rootScope.getUrl
+					 
+
 	
 				 }).then(function(ref) {
 			  
@@ -791,13 +768,36 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 					  $scope.data.date = '';
 					  $scope.data.venue = '';
 					  $scope.user = '';
-					  $rootScope.getUrl = '';
+					  
+					 // $rootScope.getUrl = '';
 			  
 			  
-					  var id = ref.key;
-					  console.log("added record with id " + id);
+					  var eventId = ref.key;
+					  console.log("added record with id " + eventId);
 					 
 					 
+   				     // var firebaseRef = firebase.database().ref('_geofire').child(id);
+   				      //var geoFire = new GeoFire(firebaseRef);
+				
+					 
+					 
+					  var lat = $scope.data.latitude;
+					  var lng = $scope.data.longitude;
+				
+					  var ref = new Firebase("https://events-app-363cb.firebaseio.com/");
+					  var geoFire = new GeoFire(ref.child("_geofire"));
+
+					 
+					    //var location = snapshot.val();
+                        console.log(eventId);
+						
+					    geoFire.set(eventId, [lat,lng]).then(function() {
+					      console.log(eventId + " has been added to GeoFire");
+					    }).catch(function(error) {
+					      console.log("Error adding " + eventId + " to GeoFire: " + error);
+					    });
+					
+					  
 					
 			  
 					  //$rootScope.hideLoading();
@@ -844,8 +844,102 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
   })
   
+ 
+  
 
+  .controller('locationCtrl', function($scope, $timeout, Auth, ionicMaterialMotion, $rootScope,$firebaseArray, $firebaseObject, $stateParams, $q, $timeout,ionicMaterialMotion, ionicMaterialInk, $firebaseAuth, $ionicLoading, $state, $cordovaGeolocation, $ionicPopup) {
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+      $scope.$parent.setHeaderFab(false);
 
+      // Activate ink for controller
+      ionicMaterialInk.displayEffect();
+
+      ionicMaterialMotion.pushDown({
+          selector: '.push-down'
+      });
+      ionicMaterialMotion.fadeSlideInRight({
+          selector: '.animate-fade-slide-in .item'
+      });
+	  
+	  $scope.useGeolocation = function() {
+	    $ionicLoading.show();
+ 
+	    $cordovaGeolocation.getCurrentPosition({timeout: 10000, enableHighAccuracy: true})
+		.then(function (position) {
+		  $ionicLoading.hide();	
+	      $scope.lat  = position.coords.latitude;
+	      $scope.lng = position.coords.longitude;
+		  //$scope.coords = position.coords;
+		  console.log('lat', $scope.lat);
+		  console.log('long', $scope.lng);
+		  addLocations($scope.lat,$scope.lng);
+		  
+	     }, function(err){
+	     	console.log('getCurrentPosition error: ' + angular.toJson(err));
+  	        $ionicLoading.hide();
+  	        $ionicPopup.alert({
+  	          title: 'Unable to get location',
+  	          template: 'Please try again or move to another location.'
+  	        });	 
+		   
+			var watchOptions = {
+			    timeout : 5000,
+			    enableHighAccuracy: false // may cause errors if true
+			  };
+
+			  var watch = $cordovaGeolocation.watchPosition(watchOptions);
+			  watch.then(
+			    null,
+			    function(err) {
+			      // error
+			    },
+			    function(position) {
+					$scope.lat  = position.coords.latitude;
+					$scope.lng = position.coords.longitude;
+					//$scope.coords = position.coords;
+					addLocations($scope.lat,$scope.lng);
+			  });    
+	    });
+	  };
+	  
+	  console.log($scope.lat);
+	  
+	  
+	  
+	  
+	  $rootScope.firebaseUser = Auth.$getAuth();
+	  var userId = $rootScope.firebaseUser.uid;
+	  			  console.log("Signed in as:", userId);
+	  
+	  
+				  var firebaseRef = firebase.database().ref('user_locations').child(userId);
+				  var geoFire = new GeoFire(firebaseRef);
+	  
+				  
+				  
+				  function addLocations(latitude,longitude) {
+				  	
+					  geoFire.set("userId", [$scope.lat, $scope.lng]).then(function() {
+					    console.log("User Provided key and location has been added to GeoFire");
+					  }, function(error) {
+					    console.log("Error: " + error);
+					  });
+					
+					
+					
+				  }
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+  })
+  
 
 
 
@@ -870,7 +964,8 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
   
-  .controller('eventCategoryCtrl', function($scope, Events, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
+  .controller('eventCategoryCtrl', function($scope, $rootScope, Events, Auth, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion, $location, $window,
+$timeout) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -887,7 +982,85 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
           selector: '.animate-fade-slide-in .item'
       });
 	  
+	  $scope.tabs = [
+	    {"text" : "Upcoming"},
+	    {"text" : "Nearby"},
+	    {"text" : "Trending"},
+	    {"text" : "Live"}
+	  ];
 	  
+	  $scope.onSlideMove = function(data){
+	  //alert("You have selected " + data.index + " tab");
+	  };
+	  
+	  
+	  var type = $stateParams.eventType;
+	//  console.log(type);
+	  $scope.type = type;
+	  console.log($scope.type);
+	
+	  
+	  $scope.type = { };
+	  $scope.type = $stateParams.eventType;
+	
+	  
+	  $scope.filters = { };
+	  $scope.events = Events.getEvents();
+	  
+	  $scope.types = [
+		  { id: 1, type: 'Meetings & Conference'},
+		  { id: 2, type: 'Music'},
+		  { id: 3, type: 'Sports & Fitness'},
+		  { id: 4, type: 'Food & Lifestyle'},
+		  { id: 5, type: 'Fashion'},
+		  { id: 6, type: 'Other'},
+		  { id: 7, type: 'Science & Tech'}, 
+		  { id: 8, type: 'Parties'}, 
+		  { id: 9, type: 'Art'}, 
+		  { id: 10, type: 'Education'}, 
+		  { id: 11, type: 'Travel & Outdoor'}, 
+		  { id: 12, type: 'Education'}, 
+		  { id: 13, type: 'Training & Seminars'},
+		  { id: 14, type: 'Film & Media'} 
+	  ];
+	 
+	  
+	  
+
+  })
+  
+  
+  
+  
+  
+  .controller('eventNearCtrl', function($scope, $cordovaGeolocation, $firebaseArray, $firebaseObject, $geofire, $log, $rootScope, Events, Auth, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion, $location, $window,
+$timeout) {
+      $scope.$parent.showHeader();
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+     $scope.$parent.setHeaderFab(false);
+
+      // Activate ink for controller
+      ionicMaterialInk.displayEffect();
+
+      ionicMaterialMotion.pushDown({
+          selector: '.push-down'
+      });
+      ionicMaterialMotion.fadeSlideInRight({
+          selector: '.animate-fade-slide-in .item'
+      });
+	  
+	  $scope.tabs = [
+	    {"text" : "Upcoming"},
+	    {"text" : "Nearby"},
+	    {"text" : "Trending"},
+	    {"text" : "Live"}
+	  ];
+	  
+	  $scope.onSlideMove = function(data){
+	  //alert("You have selected " + data.index + " tab");
+	  };
 	  
 	  
 	  var type = $stateParams.eventType;
@@ -920,10 +1093,211 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		  { id: 14, type: 'Film & Media'} 
 	  ];
 	  
+  
+  
+	
+	    //$ionicLoading.show();
+ 
+ 
+		
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	    $cordovaGeolocation.getCurrentPosition({timeout: 10000, enableHighAccuracy: true})
+		.then(function (position) {
+		  //$ionicLoading.hide();	
+	      var lat  = position.coords.latitude;
+	      var lng = position.coords.longitude;
+		  //$scope.coords = position.coords;
+		  console.log('lat', lat);
+		  console.log('long', lng);
+		  
+		  $rootScope.firebaseUser = Auth.$getAuth();
+		  var userId = $rootScope.firebaseUser.uid;
+		  console.log("Signed in as:", userId);
 	  
+		  	
+			var radiusInKm = 15;
+			
+			
+			//var $geo = $geofire(new Firebase('https://<<your-firebase>>.firebaseio.com/'));
+			var eventsRef = new Firebase("https://events-app-363cb.firebaseio.com/");
+			
+			var geoFire = new GeoFire(eventsRef.child("_geofire"));
+		
+			
+		    var geoQuery = geoFire.query({
+				center: [lat,lng],
+				radius: radiusInKm
+		    })
+			
+			
+			
+			
+			
+			
+			
+			var center = geoQuery.center();
+			var location1 = [-1.2920658999999999,36.8219462];
+			var location2 = [-1.2264188, 36.8810883];
+
+			var distance = GeoFire.distance(location1, location2);  
+			
+			
+			console.log(distance);
+			console.log(center);
+			$scope.filteredEvents = [];
+			
+			
+			
+		    geoQuery.on("key_entered", function(key, location, distance) {
+		        // Do something interesting with object
+		       
+			   console.log(key + " entered query at " + location + " (" + distance + " km from center)");
+			   
+			   
+				
+			  //  $scope.filteredEvents.push({key});
+				console.log($scope.filteredEvents);
+				
+			  // Use the "key" to look up the corresponding restaurant
+			    eventsRef.child("events").child(key).once("value", function(snapshot) {
+			      $scope.events = snapshot.val();
+				  console.log($scope.events);
+				  
+			      console.log("Found a event: " + $scope.events.name);
+				  console.log(JSON.stringify($scope.filteredEvents));
+				  
+				  $scope.filteredEvents.push($scope.events);
+				  console.log($scope.filteredEvents);
+				  $scope.$apply();
+			    });
+				
+				
+				
+				
+				//$scope.filterEvents = [];
+                  
+				//firebaseRef.child("events").child(key).once("value", function(snapshot) {
+				    // Get the vehicle data from the Open Data Set
+				//    $scope.events = snapshot.val();
+					
+				///	console.log($scope.events);
+				//	console.log(JSON.stringify($scope.filteredEvents));
+					
+					
+					//$scope.filteredEvents.push('$scope.events');
+					//console.log($scope.filteredEvents);
+				  
+					//});
+		    });
+			
+			geoQuery.on("ready", function() {
+			  geoQuery.cancel();
+			  console.log($scope.filteredEvents);
+			});
+					
+			
+					
+				
+				
+					
+					
+					 //var firebaseRef= $geofire(new Firebase("https://events-app-363cb.firebaseio.com/locations"));	
+                    // var firebaseRef = firebase.database().ref();
+				     //var  $geo = new GeoFire(firebaseRef.child("locations"));
+					//var geoFire = new GeoFire(firebaseRef.child("locations"));
+					//var geoFire = firebaseRef.child("locations");
+                    
+					//var geoFire = new GeoFire(transitFirebaseRef.child("_geofire"));
+					
+					//var firebaseRef = firebase.database().ref('locations');
+							   //var geoFire = new GeoFire(firebaseRef);
+							   
+
+							   // Create a new GeoFire instance, pulling data from the public transit data
+							   
+							 // var firebaseRef = firebase.database().ref('locations');
+							  
+							  // var geoFire = new GeoFire(firebaseRef);
+
+							 //  var geo = geoFire.ref("locations"); 
+							    // ref === firebaseRef   
+							   
+							   
+							
+				
+		        
+				
+				// Setup a GeoQuery
+				    
+					   		      
+								  // Look up the events data in the Transit Open Data Set
+					   		      //eventsRef.child(key).once("value", function(dataSnapshot) {
+					   		      // Get the vehicle data from the Open Data Set
+					   		      //var event = dataSnapshot.val();
+					   		      
+								  
+								  
+								 // $scope.ting = $firebaseObject(eventsRef)
+								 // $scope.filteredEvents.push($scope.ting);
+					
+								 
+				  
+					 
+		
+				
+				
+		  
+		  
+				// Keep track of the locations which meet our criteria
+			   
+				  
+						  
+						  
+						  
+		  
+	     }, function(err){
+	     	console.log('getCurrentPosition error: ' + angular.toJson(err));
+  	        //$ionicLoading.hide();
+  	        $ionicPopup.alert({
+  	          title: 'Unable to get location',
+  	          template: 'Please try again or move to another location.'
+  	        });	 
+		   
+			   
+	    });
 	  
+  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+   
+
+	  //var firebaseRef = firebase.database().ref('user_locations').child(userId);
+	  //var geoFire = new GeoFire(firebaseRef);
 	  
-	  
+
+	//var latitude = location[Object.keys(location)[0]];
+	//var longitude = location[Object.keys(location)[1]];
+
+	  // Query radius
+		  
+		  // Cancel the query once all data has loaded
 
   })
   
