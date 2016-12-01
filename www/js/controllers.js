@@ -438,7 +438,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
 
-  .controller('DetailCtrl', function($scope, Events, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+  .controller('DetailCtrl', function($scope, Events, Auth, $firebaseArray, $firebaseObject, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -461,10 +461,121 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  $scope.event = Events.getEvent(eventId);
 	  console.log($scope.event);
 	
-      
+	  var ref = firebase.database().ref('event');
+	      var name, descriptions;
+	      $scope.event_infos = [];
+
+		  $rootScope.firebaseUser = Auth.$getAuth(); 
+		   var userId = $rootScope.firebaseUser.uid;
+
+
+	      ref.on('value' ,function(snapshot){
+	          var userId = firebase.auth().currentUser.uid;
+	         // $scope.event_infos = [];
+
+	          snapshot.forEach(function(childSnapshot){
+
+	              var marked = firebase.database().ref('favorites/'+ eventId + childSnapshot.key);
+	              marked.on('value', function(snapshot_user){
+	              var obj = { 
+	                  "id":           childSnapshot.key,
+	                  "title":        childSnapshot.val().nameEvent,
+	                  "description":  childSnapshot.val().desc,
+	                  "marked":       snapshot_user.child("marked").val()
+	              };
+	              $scope.events_infos.push(obj);
+	          })
+	      });
+	  });
+
+	     
+		 
+	// function likesCount(likes) {
+	
+				 //return like;
+	//}
+	 
+  
+  
+	
+	    var countRef = firebase.database().ref('favorites/' + eventId);
+	   // countRef.child('likes');
+	    countRef.on('value', function(snapshot) {
+	     var favs = snapshot.child("likes").val();
+		 console.log(favs);
+		 
+		  $scope.likeCounts = favs;
+	    });
+		
+
+  
+  
+  
+  
+	 
+	 
+	      $scope.isFavorite = function(){
+			 // $rootScope.firebaseUser = Auth.$getAuth(); 
+			  // var userId = $rootScope.firebaseUser.uid;
+			 var event = Events.getEvent(eventId);
+	         var userRef = firebase.database().ref('favorites/'+ eventId);
+			 userRef.child(userId).set( true ); 
+			
+		  
+	 
+		 	
+			 
+			 
+			 userRef.once('value', function(snapshot) {
+	 //        event.marked = true;
+	
+			 
+			 var likes = snapshot.child("likes").val() ? snapshot.child("likes").val() : 0; 
+			 
+			 var marked = snapshot.child("marked").val() ? snapshot.child("marked").val() : false;      
+			// var likes = $scope.likeCounts;
+			console.log(likes);
+		   
+		    
+	          userRef.transaction(function () {
+				 // $scope.likes = likes + 1;
+				   
+	 	  			 
+			 
+			console.log(marked);
+	   		 //likesRef.child('likes');		
+			 //var marked = false;
+			 if (!marked) { 
+				 $scope.likes = likes += 1;
+				$scope.marked = true;
+			 } else {
+				 $scope.likes = likes -= 1;
+				 $scope.marked = false;
+				
+			 }
+			
+			});
+			
+			
+			console.log($scope.marked);
+		
+			
+			 userRef.set({
+	            marked: $scope.marked,
+				userId: userId,
+				 likes: $scope.likes
+	         }).then(function(result){
+				 //event.marked = true;
+	      });
+		});
+	  }
 	 
 	  
-	  
+      
+ 
+
+	
+		    
 	  
   })
 
@@ -545,7 +656,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	
 	  
-	  $rootScope.firebaseUser = Auth.$getAuth();
+	$rootScope.firebaseUser = Auth.$getAuth(); 
 
 	  
 	  console.log("Signed in as:", $rootScope.firebaseUser.uid);

@@ -13,10 +13,19 @@
 	       {{event.desc}}
 	     </p>
 
-	     <p>
-	       <a href="#" class="subdued">1 Like</a>
-	       <a href="#" class="subdued">5 Comments</a>
-	     </p>
+	       <div class="item tabs tabs-secondary tabs-icon-left">
+			 
+		 <a class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5">
+		                         <i class="icon ion-share"></i> Share
+		                     </a>
+	       
+		   <a class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5" ng-click="isFavorite(event_infos.id)"> 
+	       <i class ="icon ion-heart"></i>
+		   {{likeCounts}}
+	            </a>
+				<br/>
+          
+		    </div>
 	   </div> 
     </ion-content>
 </ion-view>

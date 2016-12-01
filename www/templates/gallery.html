@@ -68,23 +68,6 @@
                 </div>
             </div>
         </div>
-		<div class="row responsive-sm" ng-controller="eventNearCtrl">
-        <div class="list">
-            <a class="item item-avatar item-icon-right" ng-repeat="near in filteredEvents | limitTo:limit" href="#/app/detail/{{event.$id}}">
-                <img src="img/jon-snow.jpg">
-                <h2>{{near.nameEvent}}</h2>
-				<p>
 
-
-
-		         {{near.date | date:'medium'}}<br>
-				 {{near.desc | limitTo:letterLimit}}<br>
-				 {{near.venue}}
-				 {{near}}
-		       </p>
-                 <i class="icon ion-ios-arrow-right"></i>
-            </a>
-        </div>
-		</div>
     </ion-content>
 </ion-view>

@@ -13,7 +13,7 @@
 			    	</div>
 			        <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)">
 			            <ion-slide>
-			                <h3>Nearby </h3>
+			                <h3>Upcoming</h3>
 							
 							<div class="row responsive-sm" ng-controller="eventCategoryCtrl">
 					        <div class="list">
@@ -36,20 +36,20 @@
 							
 			            </ion-slide>
 			            <ion-slide>
-			                <h3>upcoming</h3>
+			                <h3>nearby</h3>
 							
 							<div class="row responsive-sm" ng-controller="eventNearCtrl">
 					        <div class="list">
-					            <a class="item item-avatar item-icon-right" ng-repeat="near in filteredEvents | limitTo:limit track by $index" href="#/app/detail/{{event.$id}}">
+					            <a class="item item-avatar item-icon-right" ng-repeat="event in filteredEvents | limitTo:limit track by $index" href="#/app/detail/{{event.$id}}">
 					                <img src="img/jon-snow.jpg">
-					                <h2>{{near.nameEvent}}</h2>
+					                <h2>{{event.nameEvent}}</h2>
 									<p>
 					
 				
 					
-							         {{near.date | date:'medium'}}<br>
-									 {{near.desc | limitTo:letterLimit}}<br>
-									 {{near.venue}}
+							         {{event.date | date:'medium'}}<br>
+									 {{event.desc | limitTo:letterLimit}}<br>
+									 {{event.venue}}
 								
 							       </p>
 					                 <i class="icon ion-ios-arrow-right"></i>
