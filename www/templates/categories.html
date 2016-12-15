@@ -1,18 +1,22 @@
 <ion-view view-title="Event Type">
     <ion-content ng-class="{expanded:isExpanded}">
-	<div class="row responsive-sm" ng-controller="eventCategoryCtrl">
+	<div class="row list responsive-sm" ng-controller="eventCategoryCtrl">
 	  
-	  <div class="col">
-       <ul>
-	       <li ng-repeat="type in types" ng-class="colors[$index]">
-			    <a href="#/app/eventCat/{{type.type}}">
-			   
-			   {{type.type}}</a></li>
-	    </ul>
+ 
+
+                   <a class="item" href="#/app/eventCat/{{type.type}}" ng-repeat="type in types">
+                      {{type.type}}
+                   </a>
+                  
+	
+	
+	
 	</div>
 	
 	
-	</div>
+	
+   
+	
 	
     </ion-content>
 </ion-view>

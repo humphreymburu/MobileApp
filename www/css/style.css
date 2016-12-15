@@ -64,13 +64,10 @@ p {
 /* Login
 ==================================*/
 .app-icon {
-    background-color: #fff;
-   // background: url('../img/crown.jpg') center;
-    background-size: cover;
-    border-radius: 50%;
     height: 125px;
     margin: 0 auto;
     width: 125px;
+	margin-bottom: 70px;
 }
 
 .social-login {
@@ -286,4 +283,18 @@ overflow-y: hidden !important;
 	
 .tabbed-slidebox .tsb-icons .scroll a {
     margin: 0 20px !important;
+}
+
+.errorz {
+    padding: 10px 16px 0;
+    color: red !important;
+}
+.title {
+	    top: -1px !important;
+}
+.hero.no-header {
+    height: 300px !important;
+}
+.lefty{
+	padding-left: 15% !important;
 }

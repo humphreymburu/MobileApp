@@ -59,6 +59,14 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 })
 
 
+
+
+
+
+
+
+
+
 .factory('Loader', ['$ionicLoading', '$timeout','$rootScope','$ionicLoading', '$ionicPopup', function($ionicLoading, $ionicLoading, $ionicPopup, $timeout,$rootScope ) {
        var LOADERAPI = {
             showLoading: function(text) {

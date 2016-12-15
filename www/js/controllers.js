@@ -358,7 +358,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
   })
   
-  .controller('ProfileCtrl', function($scope, Events, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+  .controller('ProfileCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $firebaseAuth, $firebaseObject) {
       // Set Header
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
@@ -391,54 +391,112 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  console.log($scope.events);
 	  
 	  
-	  
-  })
-
-  
-  
-  .controller('ProfileCtrl', function($scope, Events, Auth,  $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
-      // Set Header
-      $scope.$parent.showHeader();
-      $scope.$parent.clearFabs();
-      $scope.isExpanded = false;
-      $scope.$parent.setExpanded(false);
-      $scope.$parent.setHeaderFab(false);
-
-      // Set Motion
-      $timeout(function() {
-          ionicMaterialMotion.slideUp({
-              selector: '.slide-up'
-          });
-      }, 300);
-
-      $timeout(function() {
-          ionicMaterialMotion.fadeSlideInRight({
-              startVelocity: 3000
-          });
-      }, 700);
-
-      // Set Ink
-      ionicMaterialInk.displayEffect();
-	  //$rootScope.hideLoading();
-	  
-	 // $scope.events = Events.getEvents();
-	  //console.log($scope.events);
-	  $scope.limit = 15;
-	  
-	  $scope.events = Events.getEvents();
-	 
-	 
 	  $rootScope.firebaseUser = Auth.$getAuth();
-	  $scope.userId = $rootScope.firebaseUser.uid;
+	  var userId = $rootScope.firebaseUser.uid;
+	  console.log("Signed in as:", userId);
 	  
+	  
+	  
+	      var unbind;
+	      // create a 3-way binding with the user profile object in Firebase
+		  var user = firebase.auth().currentUser;
+	  
+	  
+		  var uid = user.uid;
+	      console.log(uid);
 	 
+	 
+	  
+		 // var profile = $firebaseObject(fbutil.ref('users' + $scope.uid));
+	  
+	  
+	  
+	  
+	  
+	  
+		  var profile = $firebaseObject(fbutil.ref('users', user.uid));
+	      profile.$bindTo($scope, 'profile').then(function(ub) { unbind = ub; });
+
+	      // expose logout function to scope
+	      $scope.logout = function() {
+	        if( unbind ) { unbind(); }
+	        profile.$destroy();
+	        Auth.$signOut();
+	        $location.path('/login');
+	      };
+
+	      $scope.changePassword = function(pass, confirm, newPass) {
+	        resetMessages();
+	        if( !pass || !confirm || !newPass ) {
+	          $scope.err = 'Please fill in all password fields';
+	        }
+	        else if( newPass !== confirm ) {
+	          $scope.err = 'New pass and confirm do not match';
+	        }
+	        else {
+	          Auth.$changePassword({email: profile.email, oldPassword: pass, newPassword: newPass})
+	            .then(function() {
+	              $scope.msg = 'Password changed';
+	            }, function(err) {
+	              $scope.err = err;
+	            })
+	        }
+	      };
+
+	      $scope.clear = resetMessages;
+
+	      $scope.changeEmail = function(pass, newEmail) {
+	        resetMessages();
+			
+	        var email = $scope.data.newEmail;
+	        var pass = $scope.data.pass;
+			
+			
+			
+	        var oldEmail = profile.email;
+	        Auth.$changeEmail({oldEmail: oldEmail, newEmail: email, password: pass})
+	          .then(function() {
+	            // store the new email address in the user's profile
+	            return fbutil.handler(function(done) {
+	              fbutil.ref('users', user.uid, 'email').set(newEmail, done);
+	            });
+	          })
+	          .then(function() {
+	            $scope.emailmsg = 'Email changed';
+	          }, function(err) {
+	            $scope.emailerr = err;
+	          });
+	      };
+
+	      function resetMessages() {
+	        $scope.err = null;
+	        $scope.msg = null;
+	        $scope.emailerr = null;
+	        $scope.emailmsg = null;
+	      }
+	    
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
 	  
 	  
   })
+
+  
+ 
   
   
 
-  .controller('DetailCtrl', function($scope, Events, Auth, $firebaseArray, $firebaseObject, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
+  .controller('DetailCtrl', function($scope, $cordovaSocialSharing, Events, Auth, $firebaseArray, $firebaseObject, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk) {
       $scope.$parent.showHeader();
       $scope.$parent.clearFabs();
       $scope.isExpanded = true;
@@ -572,8 +630,25 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	 
 	  
       
- 
-
+	  $scope.share = function () {
+	      console.log('Share Native');
+         var shareRef = firebase.database().ref('events/'+ eventId);
+		 shareRef.once('value', function(snapshot) {
+ 	     		$scope.title = snapshot.child("nameEvent").val();
+	     })
+ 		 console.log($scope.title);
+		 $cordovaSocialSharing
+		 //var event = Events.getEvent(eventId);
+       
+		  		
+			.share('Hi there, I found this intresting event', $scope.title , null, 'The link')
+	        .then(function(result) {
+	          console.log(result);
+	        }, function(err) {
+	          console.log('Error: ' + JSON.stringify(err));
+	        });
+	    };
+    
 	
 		    
 	  
@@ -1262,7 +1337,6 @@ $timeout) {
 			
 			
 			console.log(distance);
-			console.log(center);
 			$scope.filteredEvents = [];
 			
 			
@@ -1430,7 +1504,7 @@ $timeout) {
 	  };
 
 
-
+      
 
 
 

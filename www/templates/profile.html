@@ -1,5 +1,5 @@
 <ion-view view-title="Profile">
-    <ion-content ng-class="{expanded:$scope.isExpanded}">
+    <ion-content ng-class="{expanded:$scope.isExpanded}" class="padding">
         <div class="hero slide-up" style="background-image: url('img/profile-bg.jpg');">
             <div class="content">
                 <div class="avatar" style="background-image: url('img/daenerys.jpg');"></div>
@@ -14,36 +14,42 @@
 			<a ui-sref="app.categories" class="tab-item">
                 <i class="icon ion-android-people"></i> Categories
             </a>
-            <a ui-sref="app.gallery" class="tab-item">
-                <i class="icon ion-images"></i> Photos
-            </a>
         </div>
 		
 		
-		<p class="status good" ng-show="loggedIn">Hello! You are logged in with id {{user.uid}}.</p>
+		
 		<p class="status" ng-hide="loggedIn">Welcome. You are not <a href="#/login">logged in</a></p>
 		
 					
-        <h4 class="content padding single-padding-x"> My Events</h4>
-        <div class="list">
-            <a class="item item-avatar item-icon-right"  ng-repeat="event in events | filter: userId | limitTo:limit" href="#/app/detail/{{event.$id}}">
-                <img src="img/jon-snow.jpg">
-                <h2>{{event.nameEvent}}</h2>
-				<p>
-					
-				
-					
-		         {{event.date | date:'medium'}}<br>
-				 {{event.desc | limitTo:letterLimit}}<br>
-				 {{event.venue}}
-		       </p>
-                 <i class="icon ion-ios-arrow-right"></i>
-            </a>
-        </div>
-			
+        <h4 class="content padding single-padding-x"> My Profile</h4>
+ 
+
+ 	<div class="list card">
 		
+		<a ui-sref="app.changeEmail" class="item item-icon-left"><p>test</a>
 			
 			
-        </div>
+			
+ 		<a ui-sref="app.changeEmail" class="item item-icon-left">
+ 			<i class="icon dark ion-email"></i>
+ 			Change your email
+ 		</a>
+
+ 		<a ui-sref="app.changePassword" class="item item-icon-left">
+ 			<i class="icon dark ion-lock-combination"></i>
+ 			Change your password
+ 		</a>
+
+		<a ui-sref="app.login">
+		<button class="button button-small button-balanced ink">
+		                Log out
+		            </button>
+					<a/>
+					
+					
+		
+ 	</div>
+
+ 
     </ion-content>
 </ion-view>

@@ -19,6 +19,14 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
             StatusBar.styleDefault();
         }
 		
+		if(window.plugins && window.plugins.socialsharing) {
+		      console.log('SocialSharing is ready');
+		}
+		
+		if(navigator && navigator.splashscreen) {
+			navigator.splashscreen.hide();
+		}	
+			
 	   // $rootScope.showLoading = function(text) {
 	      //  $ionicLoading.show({
 	            //template: '<ion-spinner icon="bubbles" class="spinner-calm"></ion-spinner><br/>' + msg
@@ -299,10 +307,34 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 		  })
 
 
+		  .state('app.changeEmail', {
+		        url: '/changeEmail',
+		        views: {
+		          'menuContent' :{
+		            templateUrl: 'templates/changeEmail.html',
+		            controller: 'ProfileCtrl'
+		          },
+		          'fabContent': {
+		              templateUrl: '',
+		              controller: ''
+		          }
+		        }
+		      })
 
 
-
-
+			  .state('app.changePassword', {
+			        url: '/changePassword',
+			        views: {
+			          'menuContent' :{
+			            templateUrl: 'templates/changePassword.html',
+			            controller: 'ProfileCtrl'
+			          },
+			          'fabContent': {
+			              templateUrl: '',
+			              controller: ''
+			          }
+			        }
+			      })
 
 
 

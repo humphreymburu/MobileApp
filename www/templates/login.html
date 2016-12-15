@@ -2,8 +2,10 @@
     <ion-content style="background: url(img/login.jpg) center; background-size: cover;">
         <div class="hero no-header flat">
             <div class="content">
-                <div class="app-icon"></div>
-                <h1>WAPI</h1>
+                <div class="app-icon">
+                	<img src="/img/logo.png">
+                </div>
+             
             </div>
         </div>
 		 
@@ -32,19 +34,19 @@
 			
 						    
 	
-				
+		<div class="lefty">		
 		 <div class="padding">
 		
 		
-			    <button  class="button button-full button-balanced ink" ng-click="login(data.email,data.pass)" ng-hide="createMode">Log In</button>
-			    <button class="button button-full button-light ink" ng-click="createMode = true" ng-hide="createMode">Register</button>
-			    <button class="button button-full button-light ink" ng-cloak ng-show="createMode" ng-click="createAccount()">Create Account</button>
-			    <button class="button button-full button-light ink" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
+			    <button  class="button button-positive button-balanced ink" ng-click="login(data.email,data.pass)" ng-hide="createMode">Log In</button>
+			    <button class="button button-positive button-light ink" ng-click="createMode = true" ng-hide="createMode">Register</button>
+			    <button class="button button-positive button-light ink" ng-cloak ng-show="createMode" ng-click="createAccount()">Create Account</button>
+			    <button class="button button-positive button-light ink" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
 
 			    <p ng-show="error" class="error">{{error}}</p>
 				<p ng-show="errorMessage" class="error">{{errorMessage}}</p>
 			</div>
-           
+           </div>
 </form>
 
 		<div class="button-bar social-login">
