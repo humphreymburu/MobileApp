@@ -155,20 +155,6 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
   })
 
 
-  .state('app.signUp', {
-      url: '/signUp',
-      views: {
-          'menuContent': {
-              templateUrl: 'templates/signUp.html',
-              controller: 'SignUpCtrl'
-          },
-          'fabContent': {
-              template: ''
-          }
-      }
-  })
-
-
 
   .state('app.profile', {
       url: '/profile',
@@ -357,7 +343,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/signUp');
+  $urlRouterProvider.otherwise('/app/login');
   
 
 })

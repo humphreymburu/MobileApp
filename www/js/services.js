@@ -59,22 +59,9 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 })
 
 
-.factory('User', function($firebaseArray) {
-  return {
-    createUser: function(user) {
-      var usersRef = new firebase.database().ref('users/');
-	  
-	  var idRef =  usersRef.child('uid');
-	  
-	  idRef.$add(user).then(function(idRef) {
-	    var id = idRef.key;
-	    console.log("user record with id " + id); // returns location in the array
-	  });
-	  
-      //usersRef.child('uid').set(user);
-    },
-  }
-})
+
+
+
 
 
 
