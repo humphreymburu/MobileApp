@@ -198,16 +198,43 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       $scope.err = null;
     //$rootScope.showLoading('Logging you in...');
 	
+	
+	
      var email = $scope.data.email;
      var pass = $scope.data.pass;
 	  
-  	    Auth.$signInWithEmailAndPassword(email,pass)
-  	   .then(function(firebaseUser) {
+	  
+	  $scope.credential = firebase.auth.EmailAuthProvider.credential(email, pass);
+  	 
+    	
+	  
+	  firebase.auth().signInWithEmailAndPassword(email, pass).then(function(firebaseUser) {
   	       console.log("Signed in as:", firebaseUser.uid);
 		   $scope.data.email ='';
 		   $scope.data.pass = '';
+		 
 		   
-		 $state.go('app.profile');
+	   	  $scope.previousUser = firebase.auth().currentUser;
+	       console.log($scope.previousUser);
+		  // $scope.previousUser.link($scope.credential)
+		   
+		   
+		   
+		   
+		 
+		 var provider = new firebase.auth.FacebookAuthProvider();
+		 firebase.auth().currentUser.linkWithPopup(provider).then(function(result) {
+  // Accounts successfully linked.
+  var credential = result.credential;
+  var user = result.user;
+  // ...
+}).catch(function(error) {
+  // Handle Errors here.
+  // ...
+});
+		 
+		   
+		
 		
 		 
   	    }).catch(function(error) {
@@ -225,7 +252,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
 	 //$rootScope.hideLoading();
      
-		
+   	
+	 $state.go('app.profile');
+	
+	
+	
 	  
     };
 
@@ -236,7 +267,9 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
         var email = $scope.data.email;
         var pass = $scope.data.pass;
         // create user credentials in Firebase auth system
-		Auth.$createUserWithEmailAndPassword(email,pass)        
+	
+	
+	Auth.$createUserWithEmailAndPassword(email,pass)        
 		.then(function() {
             // authenticate so we have permission to write to Firebase
             return Auth.$signInWithEmailAndPassword(email,pass);
@@ -293,6 +326,147 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       return f + str.substr(1);
     }
   })
+  
+  
+  
+  
+  
+  .controller('SignUpCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, Auth, $state, fbutil, $firebaseAuth) {
+      $scope.$parent.clearFabs();
+       $timeout(function() {
+           $scope.$parent.hideHeader();
+       }, 0);
+       ionicMaterialInk.displayEffect();
+	
+	
+	
+	
+	
+	   $scope.login = function() {
+	       $state.go('app.login');
+	   }
+	
+	
+	
+	
+    $scope.facebook = function() {
+		
+    var provider = new firebase.auth.FacebookAuthProvider();
+	console.log("testing provider" , provider);
+	
+	
+    if (!firebase.auth().currentUser) {
+           // [START createprovider]
+           var provider = new firebase.auth.FacebookAuthProvider();
+           // [END createprovider]
+           // [START addscopes]
+           provider.addScope('user_birthday');
+           // [END addscopes]
+           // [START signin]
+           firebase.auth().signInWithPopup(provider).then(function(result) {
+             // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+             var token = result.credential.accessToken;
+             // The signed-in user info.
+             var user = result.user;
+
+           }).catch(function(error) {
+             // Handle Errors here.
+             var errorCode = error.code;
+             var errorMessage = error.message;
+             // The email of the user's account used.
+             var email = error.email;
+             // The firebase.auth.AuthCredential type that was used.
+             var credential = error.credential;
+             // [START_EXCLUDE]
+             if (errorCode === 'auth/account-exists-with-different-credential') {
+               alert('You have already signed up with a different auth provider for that email.');
+               // If you are using multiple auth providers on your app you should handle linking
+               // the user's accounts here.
+             } else {
+               console.error(error);
+             }
+             // [END_EXCLUDE]
+           });
+           // [END signin]
+		   
+		   firebase.auth().onAuthStateChanged(function(firebaseUser) {
+  
+  
+		 	  console.log("result valu", firebaseUser);
+  
+		   if (firebaseUser == null) {
+		      console.log("Signed out");
+		   } else {
+		 	 // var user = result.user;
+		       console.log("Signed in as:", firebaseUser);
+  	
+		 	$state.go('app.profile');
+		}
+		   })
+		   
+		   
+         } else {
+           // [START signout]
+           firebase.auth().signOut();
+           // [END signout]
+         }
+	 
+	
+}
+
+	
+	
+	
+    
+
+
+
+
+
+  
+  
+     $scope.twitter = function() { 
+	 
+   	 var provider = new firebase.auth.TwitterAuthProvider();
+   	
+   	 firebase.auth().signInWithRedirect(provider).then(function() {
+   		 //$ionicLoading.hide(); 
+
+   	    // Never called because of page redirect
+   	  }).catch(function(error) {
+   	    console.error("Authentication failed:", error);
+   	  });
+	
+	
+   	  firebase.auth().getRedirectResult().then(function(result) {
+   	    if (result.credential) {
+   	      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+   	      // You can use these server side with your app's credentials to access the Twitter API.
+   	      var token = result.credential.accessToken;
+   	      var secret = result.credential.secret;
+   	      // ...
+   	    }
+   	    // The signed-in user info.
+   	    var user = result.user;
+   	  }).catch(function(error) {
+   	    // Handle Errors here.
+   	    var errorCode = error.code;
+   	    var errorMessage = error.message;
+   	    // The email of the user's account used.
+   	    var email = error.email;
+   	    // The firebase.auth.AuthCredential type that was used.
+   	    var credential = error.credential;
+   	    // ...
+   	  });
+	
+   	  $state.go('app.profile');
+	
+}
+ 
+	  
+})
+  
+  
   
   
   .controller('categoriesCtrl', function($scope, $rootScope, $stateParams, $timeout, ionicMaterialInk, ionicMaterialMotion) {
@@ -391,9 +565,9 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  console.log($scope.events);
 	  
 	  
-	  $rootScope.firebaseUser = Auth.$getAuth();
-	  var userId = $rootScope.firebaseUser.uid;
-	  console.log("Signed in as:", userId);
+	  //$rootScope.firebaseUser = Auth.$getAuth();
+	 // var userId = $rootScope.firebaseUser.uid;
+	//  console.log("Signed in as:", userId);
 	  
 	  
 	  
@@ -402,8 +576,8 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		  var user = firebase.auth().currentUser;
 	  
 	  
-		  var uid = user.uid;
-	      console.log(uid);
+		  //var uid = user.uid;
+	     // console.log(uid);
 	 
 	 
 	  
@@ -414,7 +588,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  
 	  
-		  var profile = $firebaseObject(fbutil.ref('users', user.uid));
+		  var profile = $firebaseObject(fbutil.ref('users' + 'id'));
 	      profile.$bindTo($scope, 'profile').then(function(ub) { unbind = ub; });
 
 	      // expose logout function to scope
@@ -1451,10 +1625,10 @@ $timeout) {
 	     }, function(err){
 	     	console.log('getCurrentPosition error: ' + angular.toJson(err));
   	        //$ionicLoading.hide();
-  	        $ionicPopup.alert({
-  	          title: 'Unable to get location',
-  	          template: 'Please try again or move to another location.'
-  	        });	 
+  	      //  $ionicPopup.alert({
+  	          //title: 'Unable to get location',
+  	          //template: 'Please try again or move to another location.'
+  	        //});	 
 		   
 			   
 	    });

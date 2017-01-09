@@ -89,10 +89,14 @@ p {
     padding-right: 0;
  }
 
-.lists {
-	margin-right: 2rem;
-	margin-left: 2rem;
-}
+ .lists {
+ 	margin-right: 2rem;
+ 	margin-left: 2rem;
+ }
+
+ .social-list {
+    padding-top: 40%;
+ }
 /* ----- */
 
 .lists .item  {
