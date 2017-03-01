@@ -16,16 +16,13 @@
 
 	    <script src="lib/ionic/js/ionic.bundle.js"></script>
 	    <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
-	      <script src="lib/ion-md-input/ion-md-input.js"></script>
+	    <script src="lib/ion-md-input/ion-md-input.js"></script>
 	  
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
 
-   <script src="lib/ngCordova/dist/ng-cordova.js"></script>
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
 
 	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
@@ -72,15 +69,20 @@
     <!-- ngMessages -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-messages.js"></script>
 	
-	
+	<script src="lib/ngCordova/dist/ng-cordova.js"></script>
+	 
+	<script src="cordova.js"></script>
 
 	
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-kGPft7WPz_MPaTvN3YPxPYcTC06cVYs&libraries=places"</script>
 	
+	
 	 <script src="/bower_components/angular-animate/angular-animate.js"></script>
+	 <script src="lib/ngstorage/ngStorage.min.js"></script>
+	
 	
   </head>
-  <body ng-app="starter">
+  <body ng-app="starter" class="platform-browser">
     <ion-nav-view></ion-nav-view>
   </body>
 </html>

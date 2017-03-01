@@ -1,5 +1,5 @@
 //'use strict'
-angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services', 'angularGeoFire'])
+angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services', 'angularGeoFire', 'ngStorage'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout) {
     // Form data for the login modal
@@ -86,7 +86,8 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 })
 
 
-.controller('LoginCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk,  Auth, $state, fbutil, $firebaseAuth) {
+.controller('LoginCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $localStorage,
+    $sessionStorage, Auth, $state, fbutil, $firebaseAuth) {
     $scope.$parent.clearFabs();
      $timeout(function() {
          $scope.$parent.hideHeader();
@@ -94,94 +95,6 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
      ionicMaterialInk.displayEffect();
 	
 	
-  $scope.faceSign = function() {
-
-
-	var provider = new firebase.auth.FacebookAuthProvider();
-	   provider.addScope('email');
-	
-	  firebase.auth().signInWithRedirect(provider).then(function() {
-		 
-	    // Never called because of page redirect
-	  }).catch(function(error) {
-	    console.error("Authentication failed:", error);
-	  });
-	
-	
-	  firebase.auth().getRedirectResult().then(function(result) {
-	 // Auth.$getRedirectResult().then(function(result) {
-	    if (result.credential) {
-	      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-	      var token = result.credential.accessToken;
-	      // ...
-	    }
-	    // The signed-in user info.
-	    var user = result.user;
-	  }).catch(function(error) {
-	    // Handle Errors here.
-	    $scope.errorCode = error.code;
-	    $scope.errorMessage = error.message;
-	    // The email of the user's account used.
-	    $scope.email = error.email;
-	    // The firebase.auth.AuthCredential type that was used.
-	    $scope.credential = error.credential;
-		if ($scope.errorCode === 'auth/account-exists-with-different-credential') {
-		          alert('You have already signed up with a different auth provider for that email.');
-		          // If you are using multiple auth providers on your app you should handle linking
-		          // the user's accounts here.
-		        } else {
-		          console.error(error);
-		        }
-	    // ...
-	  });
-	
-	
-	 $state.go('app.profile');
-	 
-	
-  }
-  
-  
-  
-  
-   $scope.twitterSign = function() {
-	  
-	    var provider = new firebase.auth.TwitterAuthProvider();
-   	
-	 firebase.auth().signInWithRedirect(provider).then(function() {
-		 //$ionicLoading.hide(); 
-
-	    // Never called because of page redirect
-	  }).catch(function(error) {
-	    console.error("Authentication failed:", error);
-	  });
-	
-	
-	  firebase.auth().getRedirectResult().then(function(result) {
-	    if (result.credential) {
-	      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-	      // You can use these server side with your app's credentials to access the Twitter API.
-	      var token = result.credential.accessToken;
-	      var secret = result.credential.secret;
-	      // ...
-	    }
-	    // The signed-in user info.
-	    var user = result.user;
-	  }).catch(function(error) {
-	    // Handle Errors here.
-	    var errorCode = error.code;
-	    var errorMessage = error.message;
-	    // The email of the user's account used.
-	    var email = error.email;
-	    // The firebase.auth.AuthCredential type that was used.
-	    var credential = error.credential;
-	    // ...
-	  });
-	
-	  $state.go('app.profile');
-	
-	
-   }
   
   
 
@@ -204,7 +117,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
      var pass = $scope.data.pass;
 	  
 	  
-	  $scope.credential = firebase.auth.EmailAuthProvider.credential(email, pass);
+	  
   	 
     	
 	  
@@ -214,28 +127,46 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		   $scope.data.pass = '';
 		 
 		   
-	   	  $scope.previousUser = firebase.auth().currentUser;
-	       console.log($scope.previousUser);
+	   	  var previousUser = firebase.auth().currentUser;
+	       console.log(previousUser);
 		  // $scope.previousUser.link($scope.credential)
 		   
+		   var pendingCred = $localStorage.credential;
 		   
+		   console.log("storage2", $localStorage.credential);
 		   
-		   
-		 
-		 var provider = new firebase.auth.FacebookAuthProvider();
-		 firebase.auth().currentUser.linkWithPopup(provider).then(function(result) {
-  // Accounts successfully linked.
-  var credential = result.credential;
-  var user = result.user;
-  // ...
-}).catch(function(error) {
-  // Handle Errors here.
-  // ...
-});
-		 
-		   
+		   if(pendingCred) {
+			   
+		   var pendingCredObj = firebase.auth.FacebookAuthProvider.credential(JSON.parse(pendingCred));
+ 		   
+		   previousUser.link(pendingCredObj).then(function(user) {
+ 		       console.log("Account linking success", user);
+ 		   }, function(error) {
+ 		       console.log("Account linking error", error);
+ 		   });
+			
+		  }
+		  
+		  firebase.auth().onAuthStateChanged(function(user) {
+		    if (user) {
+		      // User is signed in.
+				$state.go('app.profile');
 		
+		 	   	 // var previousUser = firebase.auth().currentUser;
+		 	       //console.log($scope.previousUser);
+		 		  // $scope.previousUser.link($scope.credential)
+  
+		 		   //$localStorage.previousUser = JSON.stringify(previousUser);
 		
+		    } else {
+		      // No user is signed in.
+		    }
+		  });
+		  
+		   
+		   
+		  
+	
 		 
   	    }).catch(function(error) {
   	       //$scope.error = errorMessage(error);
@@ -253,7 +184,10 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	 //$rootScope.hideLoading();
      
    	
-	 $state.go('app.profile');
+   
+	
+	
+
 	
 	
 	
@@ -287,7 +221,18 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 			
 			
           }).catch(function(error){
+			  
+			  var errorCode = error.code;
+			   var errorEmail = error.email;
+			  if (errorCode == 'auth/email-already-in-use') {
+			     alert('email already in use , try Logging in');
+				 console.log("error email",errorEmail);
+			   } else {
+			     alert(errorMessage);
+			   }
+			   
             $scope.error = errorMessage(error);
+			 console.log("error email", $scope.error);
 			//$rootScope.hideLoading();
 			//$rootScope.alert('<b><i class="icon ion-person"></i> Login error</b>', err);
           });
@@ -331,7 +276,8 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   
   
   
-  .controller('SignUpCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, Auth, $state, fbutil, $firebaseAuth) {
+  .controller('SignUpCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $localStorage,
+    $sessionStorage, Auth, $state, fbutil, $firebaseAuth, $ionicPopup) {
       $scope.$parent.clearFabs();
        $timeout(function() {
            $scope.$parent.hideHeader();
@@ -351,117 +297,172 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
     $scope.facebook = function() {
 		
-    var provider = new firebase.auth.FacebookAuthProvider();
-	console.log("testing provider" , provider);
-	
-	
-    if (!firebase.auth().currentUser) {
-           // [START createprovider]
-           var provider = new firebase.auth.FacebookAuthProvider();
-           // [END createprovider]
-           // [START addscopes]
-           provider.addScope('user_birthday');
-           // [END addscopes]
-           // [START signin]
-           firebase.auth().signInWithPopup(provider).then(function(result) {
-             // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-             var token = result.credential.accessToken;
-             // The signed-in user info.
-             var user = result.user;
-
-           }).catch(function(error) {
-             // Handle Errors here.
-             var errorCode = error.code;
-             var errorMessage = error.message;
-             // The email of the user's account used.
-             var email = error.email;
-             // The firebase.auth.AuthCredential type that was used.
-             var credential = error.credential;
-             // [START_EXCLUDE]
-             if (errorCode === 'auth/account-exists-with-different-credential') {
-               alert('You have already signed up with a different auth provider for that email.');
-               // If you are using multiple auth providers on your app you should handle linking
-               // the user's accounts here.
-             } else {
-               console.error(error);
-             }
-             // [END_EXCLUDE]
-           });
-           // [END signin]
-		   
-		   firebase.auth().onAuthStateChanged(function(firebaseUser) {
-  
-  
-		 	  console.log("result valu", firebaseUser);
-  
-		   if (firebaseUser == null) {
-		      console.log("Signed out");
-		   } else {
-		 	 // var user = result.user;
-		       console.log("Signed in as:", firebaseUser);
-  	
-		 	$state.go('app.profile');
+		
+		var fbLoginSuccess = function (userData) {
+		  console.log("UserInfo: ", JSON.stringify(userData));
+		  facebookConnectPlugin.getAccessToken(function(token) {
+		    console.log("Token: " + token);
+			
+			signFb(token);
+		    authDetails();
+		
+		  });
+		           
+		  
 		}
-		   })
+		
+	  function signFb(token) {
+		  
+	      var credential = firebase.auth.FacebookAuthProvider.credential(token);
+			 console.log("UserInfo: ", JSON.stringify(credential));
+		  
+		  var prevUser = firebase.auth().currentUser;
+		  
+		  console.log("prevUser", JSON.stringify(prevUser));
+		  
+		  firebase.auth().signInWithCredential(credential).then(function(user) {
+			  console.log("Sign In Success", user);
+			  firebase.auth().onAuthStateChanged(function(user) {
+			    if (user) {
+			      // User is signed in.
+					$state.go('app.profile');
+					
+		  	   	 // var previousUser = firebase.auth().currentUser;
+		  	       //console.log($scope.previousUser);
+		  		  // $scope.previousUser.link($scope.credential)
 		   
-		   
-         } else {
-           // [START signout]
-           firebase.auth().signOut();
-           // [END signout]
-         }
-	 
+		  		   //$localStorage.previousUser = JSON.stringify(previousUser);
+					
+			    } else {
+			      // No user is signed in.
+			    }
+			  });
+			  
+		  }, function(error) {
+		     
+			  if (error.code === 'auth/account-exists-with-different-credential') {
+			      
+				  console.log("email already exists");
+				  // Step 2.
+			      // User's email already exists.
+			      // The pending Facebook credential.
+			      var pendingCred = error.credential;
+				 
+			      // The provider account's email address.
+			      var email = error.email;
+			      // Get registered providers for this email.
+			     firebase.auth().fetchProvidersForEmail(email).then(function(providers) {
+					  console.log(providers);
+			        // Step 3.
+			        // If the user has several providers,
+			        // the first provider in the list will be the "recommended" provider to use.
+			        if (providers[0] === 'password') {
+			          // Asks the user his password.
+			          // In real scenario, you should handle this asynchronously.
+			          //var password = promptUserForPassword(); // : implement promptUserForPassword.
+					  //$state.go('app.login');
+					   console.log("pn", email, credential);
+					   
+					   $localStorage.credential = JSON.stringify(credential);
+					  
+					   var pendingCred = $localStorage.credential;
+					   
+					   console.log("storage", pendingCred);
+					   
+					  
+					   
+					   
+					   
+					  $scope.login();
+			          //auth.signInWithEmailAndPassword(email, password).then(function(user) {
+			            // Step 4a.
+			          //  return user.link(pendingCred);
+			          //}).then(function() {
+			            // Facebook account successfully linked to the existing Firebase user.
+			         
+						  //});
+			          //return;
+			        }
+			        // All the other cases are external providers.
+			        // Construct provider object for that provider.
+			        // implement getProviderForProviderId.
+			        //var provider = getProviderForProviderId(providers[0]);
+			        // At this point, you should let the user know that he already has an account
+			        // but with a different provider, and let him validate the fact he wants to
+			        // sign in with this provider.
+			        // Sign in to provider. Note: browsers usually block popup triggered asynchronously,
+			        // so in real scenario you should ask the user to click on a "continue" button
+			        // that will trigger the signInWithPopup.
+			        //auth.signInWithPopup(provider).then(function(result) {
+			          // Remember that the user may have signed in with an account that has a different email
+			          // address than the first one. This can happen as Firebase doesn't control the provider's
+			          // sign in flow and the user is free to login using whichever account he owns.
+			          // Step 4b.
+			          // Link to Facebook credential.
+			          // As we have access to the pending credential, we can directly call the link method.
+			         // result.user.link(pendingCred).then(function() {
+			            // Facebook account successfully linked to the existing Firebase user.
+			           
+			         // });
+			        //});
+			      });
+			    }
+		  });
+		  
+		  
+          
+	  }
 	
-}
+	
+	  
+	
+	
+	
+	
+	
+	
+	
+	  function authDetails() {
+		
+		facebookConnectPlugin.api("me?fields=id,email,name", ["user_birthday", "public_profile", "email", "user_photos"],
+		  function onSuccess (result) {
+		    console.log("Result: ", JSON.stringify(result));
+			
+			/*var userData = {
+				id: result.id,
+				name: result.name,
+				email: result.email
+			}*/
+			
+			        //Do what you wish to do with user data. Here we are just displaying it in the view
+			      // $scope.fbData = JSON.stringify(userData, null, 4);
+				   //console.log($scope.fbData);
+					
+		  }, function onError (error) {
+		    console.error("Failed: ", JSON.stringify(error));
+		  }
+		);
+	  }
+	
 
+		facebookConnectPlugin.login(["public_profile"],
+		    fbLoginSuccess,
+		    function (error) { console.log("" + error) }
+		);
+	
+	
+	    
 	
 	
 	
-    
+	
+	    
+	
+	}
 
 
 
 
-
-  
-  
-     $scope.twitter = function() { 
-	 
-   	 var provider = new firebase.auth.TwitterAuthProvider();
-   	
-   	 firebase.auth().signInWithRedirect(provider).then(function() {
-   		 //$ionicLoading.hide(); 
-
-   	    // Never called because of page redirect
-   	  }).catch(function(error) {
-   	    console.error("Authentication failed:", error);
-   	  });
-	
-	
-   	  firebase.auth().getRedirectResult().then(function(result) {
-   	    if (result.credential) {
-   	      // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-   	      // You can use these server side with your app's credentials to access the Twitter API.
-   	      var token = result.credential.accessToken;
-   	      var secret = result.credential.secret;
-   	      // ...
-   	    }
-   	    // The signed-in user info.
-   	    var user = result.user;
-   	  }).catch(function(error) {
-   	    // Handle Errors here.
-   	    var errorCode = error.code;
-   	    var errorMessage = error.message;
-   	    // The email of the user's account used.
-   	    var email = error.email;
-   	    // The firebase.auth.AuthCredential type that was used.
-   	    var credential = error.credential;
-   	    // ...
-   	  });
-	
-   	  $state.go('app.profile');
-	
-}
  
 	  
 })
@@ -974,7 +975,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		           // Observe state change events such as progress, pause, and resume
 		           // See below for more detail
 		         }, function (error) {
-		           // Handle unsuccessful uploads, alert with error message
+		           // Handle unsuccessful uploads,  with error message
 		           alert(error.message)
 		           reject(error)
 		         }, function () {

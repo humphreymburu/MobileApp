@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox', 'starter.controllers', 'starter.services', 'starter.utils', 'starter.config', 'starter.auth', 'ionic-material' , 'ngCordova', 'ngMessages', 'ngAnimate', 'ui.router','angularGeoFire'])
+angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox', 'starter.controllers', 'starter.services', 'starter.utils', 'starter.config', 'starter.auth', 'ionic-material' , 'ngCordova', 'ngMessages', 'ngAnimate', 'ui.router','angularGeoFire', 'firebase'])
 .run(function($ionicPlatform, $rootScope, $state, $timeout, $ionicLoading, $ionicPopup) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -14,6 +14,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
         if (window.cordova && window.cordova.plugins.Keyboard) {
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         }
+		
         if (window.StatusBar) {
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
