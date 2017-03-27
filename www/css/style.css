@@ -302,3 +302,80 @@ overflow-y: hidden !important;
 .lefty{
 	padding-left: 15% !important;
 }
+
+.profile-view .profile-slides .user-data .user-image-outer {
+	width: 30vw;
+	display: inline-block
+}
+.profile-view .profile-slides .user-data .user-image {
+	width: 100%;
+	border-radius: 50%;
+	border: 2px solid #FFF
+}
+.profile-view .profile-slides .user-data .user-name {
+	margin: 0;
+	font-size: 18px;
+	color: #FFF
+}
+.profile-view .profile-slides .user-data .user-resume {
+	margin: 5px 0 0 0;
+	font-size: 14px;
+	color: #FFF
+}
+
+.profile {
+	 height: 100px !important;
+	 box-shadow: none !important;
+}
+
+.item, .item-complex .item-content, .item-radio .item-content {
+	border-color: #ddd !important;
+}
+
+.item-custom.item {
+  border-color: #ddd !important;
+ /**background-color: #ddd !important;**/
+  margin: -0px;
+}
+
+
+
+.item-custom.item.item-divider:first-child {
+     border-top: solid 1px rgba(0,0,0,.12) !important;
+	 border-color: #ddd !important;  */
+}
+.item-divider {
+   border-color: #ddd !important;
+   
+}
+
+.ava {
+ 
+        background-color: red;
+	    background-position: center;
+	    background-size: cover;
+	    border: solid 1px rgba(255,255,255,.8);
+	    border-radius: 50%;
+	    display: inline-block;
+	    height: 55px;
+	    margin-bottom: 20px !important;
+	    position: relative;
+	    width: 55px !important;
+}
+
+
+.proc h3 {
+    float: right;
+    font-size: 12px;
+    display: inline-block;
+    width: 75%;
+    text-align: left;
+    margin-top: 20px !important;
+	
+}
+
+
+.stab, a.stab {
+    color: #8a8a8a;
+}
+    

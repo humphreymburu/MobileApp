@@ -6141,11 +6141,11 @@ a.item-content {
   position: absolute;
   top: 0;
   height: 100%;
-  font-size: 32px; }
+  font-size: 28px; }
   .item-icon-left .icon:before,
   .item-icon-right .icon:before {
     display: block;
-    width: 32px;
+    width: 20px;
     text-align: center; }
 
 .item .fill-icon {
@@ -9826,3 +9826,16 @@ h2 {
 
 h1 {
   color: #fff; }
+
+.hero.content {
+  height: 50% !important; }
+
+.scroll {
+  height: 100%; }
+
+.headbar {
+  margin-bottom: 100px; }
+
+.red-bg {
+  background-color: #B71C1C; 
+}

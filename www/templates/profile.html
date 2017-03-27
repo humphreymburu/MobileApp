@@ -1,11 +1,55 @@
-<ion-view view-title="Profile">
-    <ion-content ng-class="{expanded:$scope.isExpanded}" class="padding">
-        <div class="hero slide-up" style="background-image: url('img/profile-bg.jpg');">
+<ion-view view-title=" My Profile">
+
+
+
+<ion-nav-buttons side="right">
+                        <button class="button button-icon button-clear ion-settings" ng-click="settings()">
+                        </button>
+</ion-nav-buttons>
+			  
+				
+	        
+    <ion-content ng-class="{expanded:$scope.isExpanded}">
+       
+	   
+	   
+	   
+	    <div class="hero slide-up" style="background-image: url('img/profile-bg.jpg');">
             <div class="content">
-                <div class="avatar" style="background-image: url('img/daenerys.jpg');"></div>
+				
+				
+				<div class="avatar">       
+				   
+				   <div class="avatar" style="background-image: url({{photoUrl}});"></div>
+				    
+		      </div>
                 <h3><a class="light">Daenerys Targaryen</a></h3>
                 <h4>dragon_mommy</h4>
             </div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		<!-- 
+			<div class="col col-center user-data">
+			               
+			     <div class="user-image-outer">                  
+			         <pre-img ratio="_1_1" helper-class="rounded-image">
+					   <img class="user-image" ng-src="{{user.picture}}" spinner-on-load>
+				     </pre-img>           
+			      </div>              
+               <h2 class="user-name">{{user.name}}</h2>'
+			   <h3><a class="light">Daenerys Targaryen</a></h3>
+			   <p class="user-resume">                 
+				<b>{{user.followers}}</b> Followers <b>{{user.following}}</b> Following</p>
+              </div> -->
+			
+			
         </div>
         <div class="tabs tabs-dark tabs-icon-top static">
             <a ui-sref="app.eventCat" class="tab-item">

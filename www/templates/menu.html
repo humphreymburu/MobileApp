@@ -4,7 +4,7 @@
             <ion-nav-back-button class="no-text">
             </ion-nav-back-button>
             <ion-nav-buttons side="right">
-                <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="right">
+                <button class="button button-icon button-clear ion-navicon-round" menu-toggle="right">
                 </button>
             </ion-nav-buttons>
         </ion-nav-bar>
@@ -12,25 +12,72 @@
         <ion-nav-view name="menuContent" ng-class="{expanded: isExpanded}" ></ion-nav-view>
     </ion-side-menu-content>
     <ion-side-menu side="right">
-        <ion-header-bar class="dark-bg expanded">
-            <span class="avatar" style="background: url('img/crown.jpg'); background-size: cover;"></span>
-            <h2>WAPI</h2>
+        <ion-header-bar class="stable-bg expanded">
+        
+			 <div style="background-image: url({{photoUrl}});" class="avatar motion spin fade"></div>
+	
+            <div class="menu-bottom">
+                {{name}}<p>test</p>
+            </div>
         </ion-header-bar>
-        <ion-content class="stable-bg has-expanded-header">
+        <ion-content class="light-bg has-expanded-header">
+		
+        <div class="row menu-top-options">
+                   
+           <div class="col col-top">
+		
+		
             <ion-list>
-                <ion-item nav-clear menu-close ui-sref="app.profile">
-                    Profile
+			
+            
+            <ion-item ui-sref-active="active" class="item-icon-left" nav-clear menu-close ui-sref="app.profile">
+				<h2 class="menu-text">Home</h2>
+            </ion-item>
+			
+                <ion-item class="item-icon-left" nav-clear menu-close ui-sref="app.account">
+					<h2 class="menu-text">My Account</h2>
                 </ion-item>
-                <ion-item nav-clear menu-close ui-sref="app.addEvent">
-                   Add an Event
+                <ion-item ui-sref-active="active" class="item-icon-left" nav-clear menu-close ui-sref="app.addEvent">
+                  <h2 class="menu-text">Settings</h2>
                 </ion-item>
-                <ion-item nav-clear menu-close ui-sref="app.categories">
-                    Categories
+                <ion-item ui-sref-active="active" class="item-icon-left" nav-clear menu-close ui-sref="app.categories">
+                  <h2 class="menu-text">Interests</h2>
                 </ion-item>
-                <ion-item nav-clear menu-close ui-sref="app.gallery">
-                    Gallery
-                </ion-item>
+               
+				
+				
+              
+				
+				
             </ion-list>
+			
+			
+               </div>
+                  
+            </div>
+			
+		    <div class="row menu-bottom-options">        
+		              <div class="col col-bottom">
+		                 <ion-list>           
+		                  <ion-item ui-sref-active="active" class="item-icon-left" nav-clear menu-close ui-sref="app.addEvent">
+		                    <h2 class="menu-text">Settings</h2>
+		                  </ion-item>
+						  
+		                  <ion-item ui-sref-active="active" class="item-icon-left" nav-clear menu-close ui-sref="app.categories">
+		                    <h2 class="menu-text">Sign Out</h2>
+		                  </ion-item>
+		                              
+		                 </ion-list>
+		                         
+		              </div>
+		                    
+		           </div>
         </ion-content>
     </ion-side-menu>
 </ion-side-menus>
+
+
+
+
+
+

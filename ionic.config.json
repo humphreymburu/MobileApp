@@ -1,5 +1,14 @@
 {
   "name": "smartApp",
   "app_id": "33",
-  "gulpStartupTasks": ["sass", "watch"]
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+	"scss/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ]
 }

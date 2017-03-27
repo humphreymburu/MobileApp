@@ -126,26 +126,79 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		   $scope.data.email ='';
 		   $scope.data.pass = '';
 		 
+		 
+		var credential = firebase.auth.EmailAuthProvider.credential(email, pass);
+		 
 		   
 	   	  var previousUser = firebase.auth().currentUser;
 	       console.log(previousUser);
 		  // $scope.previousUser.link($scope.credential)
 		   
-		   var pendingCred = $localStorage.credential;
+		  var pendingCred = $localStorage.credential;
 		   
-		   console.log("storage2", $localStorage.credential);
+		  // console.log("storage2", $localStorage.credential);
 		   
 		   if(pendingCred) {
 			   
 		   var pendingCredObj = firebase.auth.FacebookAuthProvider.credential(JSON.parse(pendingCred));
  		   
 		   previousUser.link(pendingCredObj).then(function(user) {
- 		       console.log("Account linking success", user);
+ 		       console.log("Facebook Account linking success", user);
  		   }, function(error) {
- 		       console.log("Account linking error", error);
+ 		       console.log("Facebook Account linking error", error);
+			   
+			   // Sign in user with another account
+			     firebase.auth().signInWithCredential(pendingCredObj).then(function(user) {
+			     console.log("Sign In Success", user);
+			     var currentUser = user;
+			     // Merge prevUser and currentUser accounts and data
+			     // ...
+				 previousUser = currentUser;
+				 
+				 
+				 
+			
+				 
+			   }, function(error) {
+			     console.log("Sign In Error", error);
+			   });
+			   
+			   
  		   });
 			
+		  } else if (credential) {
+		  	
+			 previousUser.link(credential).then(function(user) {
+			    console.log(" email/ password account linking success", user);
+			  }, function(error) {
+			    console.log("email/ password account linking error", error);
+				
+				  firebase.auth().signInWithCredential(credential).then(function(user) {
+				  console.log("Sign In Success", user);
+				  var currentUser = user;
+				  // Merge prevUser and currentUser accounts and data
+				  // ...
+				  
+				  previousUser = currentUser;
+				  
+				}, function(error) {
+				  console.log("Sign In Error", error);
+				});
+				
+				
+				
+				
+				
+			  });
+			
+			
+			
+			
 		  }
+		  
+		  
+		  
+		  
 		  
 		  firebase.auth().onAuthStateChanged(function(user) {
 		    if (user) {
@@ -193,6 +246,24 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
 	  
     };
+	
+	
+	$scope.upPassword = function (){
+	
+	Auth.$updatePassword("newPass").then(function() {
+	  console.log("Password changed successfully!");
+	}).catch(function(error) {
+	  console.error("Error: ", error);
+	});
+	
+};
+	
+	
+	
+	
+	
+	
+	
 
     $scope.createAccount = function(email,pass) {
      // $rootScope.showLoading('Creating Account...');
@@ -226,7 +297,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 			   var errorEmail = error.email;
 			  if (errorCode == 'auth/email-already-in-use') {
 			     alert('email already in use , try Logging in');
-				 console.log("error email",errorEmail);
+				 console.log("error email",email, JSON.stringify(errorCode));
 			   } else {
 			     alert(errorMessage);
 			   }
@@ -321,20 +392,78 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		  console.log("prevUser", JSON.stringify(prevUser));
 		  
 		  firebase.auth().signInWithCredential(credential).then(function(user) {
-			  console.log("Sign In Success", user);
+			  console.log(" Fb Sign In Success", user);
 			  firebase.auth().onAuthStateChanged(function(user) {
 			    if (user) {
 			      // User is signed in.
-					$state.go('app.profile');
+				$state.go('app.profile');
+				
+				
+				
 					
 		  	   	 // var previousUser = firebase.auth().currentUser;
 		  	       //console.log($scope.previousUser);
 		  		  // $scope.previousUser.link($scope.credential)
 		   
-		  		   //$localStorage.previousUser = JSON.stringify(previousUser);
+		  		 $localStorage.previousUserz = JSON.stringify(prevUser);
+				 
+				 
+				 
+				 var email = user.email;
+				         
+				 console.log("Display", email);
+				 console.log("user6", user);
+				  
+				 var ref = firebase.database().ref("users");
+				  ref.orderByChild("email").equalTo(email).on("child_added", function(snapshot) {
+				    console.log("papa", snapshot.key);
+					
+		            var displayName = user.displayName;
+		            var email = user.email;
+		            var photoURL = user.photoURL;
+		            var uid = user.uid;
+					
+					
+					if(!snapshot.key) {
+						
+						  firebase.database().ref('users/' + 'id').set({
+						    username: displayName,
+						    email: email,
+						    profile_picture : user.photoURL
+						  });
+							
+						  console.log("saved new user data");
+							
+						
+					} else if (snapshot.key) {
+						
+						var userId = snapshot.key;
+						
+						
+						  firebase.database().ref('users/' + userId).update({
+						    username: displayName,
+						    email: email,
+						    profile_picture : user.photoURL
+						  });
+						
+						  console.log("updated user details");
+					} else {
+						console.log("already added user details");
+					}
+					
+					
+					
+					
+					
+					
+				  });
+				 
+				 
+				 
 					
 			    } else {
 			      // No user is signed in.
+					$state.go('app.login');
 			    }
 			  });
 			  
@@ -364,6 +493,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 					   console.log("pn", email, credential);
 					   
 					   $localStorage.credential = JSON.stringify(credential);
+					   $localStorage.email = JSON.stringify(email);
 					  
 					   var pendingCred = $localStorage.credential;
 					   
@@ -373,7 +503,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 					   
 					   
 					   
-					  $scope.login();
+					 $scope.login();
 			          //auth.signInWithEmailAndPassword(email, password).then(function(user) {
 			            // Step 4a.
 			          //  return user.link(pendingCred);
@@ -381,7 +511,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 			            // Facebook account successfully linked to the existing Firebase user.
 			         
 						  //});
-			          //return;
+			          return;
 			        }
 			        // All the other cases are external providers.
 			        // Construct provider object for that provider.
@@ -424,9 +554,9 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
 	  function authDetails() {
 		
-		facebookConnectPlugin.api("me?fields=id,email,name", ["user_birthday", "public_profile", "email", "user_photos"],
+		facebookConnectPlugin.api("me?fields=id,email,name", ["user_birthday", "public_profile", "email" ],
 		  function onSuccess (result) {
-		    console.log("Result: ", JSON.stringify(result));
+		    console.log("Resultzz: ", JSON.stringify(result));
 			
 			/*var userData = {
 				id: result.id,
@@ -437,6 +567,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 			        //Do what you wish to do with user data. Here we are just displaying it in the view
 			      // $scope.fbData = JSON.stringify(userData, null, 4);
 				   //console.log($scope.fbData);
+				   
+				   
+				   
+				   
+				   
 					
 		  }, function onError (error) {
 		    console.error("Failed: ", JSON.stringify(error));
@@ -533,9 +668,14 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
   })
   
-  .controller('ProfileCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $timeout, ionicMaterialMotion, ionicMaterialInk, $firebaseAuth, $firebaseObject) {
+  .controller('ProfileCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
+    $sessionStorage, $timeout, ionicMaterialMotion, $state, ionicMaterialInk, $firebaseAuth, $firebaseObject, Profiles) {
       // Set Header
       $scope.$parent.showHeader();
+	  
+   
+	  
+	  
       $scope.$parent.clearFabs();
       $scope.isExpanded = false;
       $scope.$parent.setExpanded(false);
@@ -570,21 +710,74 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	 // var userId = $rootScope.firebaseUser.uid;
 	//  console.log("Signed in as:", userId);
 	  
+	
 	  
-	  
-	      var unbind;
+	     // var unbind;
 	      // create a 3-way binding with the user profile object in Firebase
-		  var user = firebase.auth().currentUser;
+		 /// var user = firebase.auth().currentUser;
 	  
 	  
-		  //var uid = user.uid;
-	     // console.log(uid);
+		 // var uid = user.id;
+	    // console.log(uid);
+		 
+		// var test = Profiles.getProfile(uid);
+	      //console.log("testing",test)
 	 
-	 
+	  
+	  
+	  firebase.auth().onAuthStateChanged(function(user) {
+	    if (user) {
+	      // User is signed in.
+			console.log("Signed in as", user.uid);
+			//console.log("user", JSON.stringify(user));
+
+           
+			
+			$scope.photoUrl = user.photoURL;
+			console.log("urlpic",$scope.photoUrl);
+			
+			
+			
+				
+		 var email = user.email;
+		         
+		 console.log("Display", email);
+		  
+		 var ref = firebase.database().ref("users");
+		  
+		  ref.orderByChild("email").equalTo(email).on("child_added", function(snapshot) {
+		    console.log("papa4", snapshot.key);
+			
+			
+			$scope.id = snapshot.key;
+			console.log("uid", $scope.id);
+			
+			var adaRef = ref.child($scope.id);
+			var adaFirstNameRef = adaRef.child('profile_picture');
+			console.log("pic", adaFirstNameRef);
+			
+			
+			
+			
+		});
+
+		//var picRef = firebase.database().ref("users").child($scope.id);
+		var usersRef = firebase.database().ref('users');
+		
+		//console.log("uid2", $scope.uid);
+
+
+
+	
+	    } else {
+	      // No user is signed in.
+	    }
+	  });
+	  
 	  
 		 // var profile = $firebaseObject(fbutil.ref('users' + $scope.uid));
 	  
-	  
+	     
 	  
 	  
 	  
@@ -653,9 +846,11 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
 	  
 	  
+		  $scope.settings = function() {
+		                 $state.go('app.account');
+		              };
 	  
-	  
-	  
+	 
 	  
 	  
 	  
@@ -667,6 +862,80 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   })
 
   
+  .controller('AccountCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
+    $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, ionicMaterialInk, $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
+      // Set Header
+      $scope.$parent.showHeader();
+	  
+   
+	  
+	  
+      $scope.$parent.clearFabs();
+      $scope.isExpanded = false;
+      $scope.$parent.setExpanded(false);
+      $scope.$parent.setHeaderFab(false);
+
+      // Set Motion
+      $timeout(function() {
+          ionicMaterialMotion.slideUp({
+              selector: '.slide-up'
+          });
+      }, 300);
+
+      $timeout(function() {
+          ionicMaterialMotion.fadeSlideInRight({
+              startVelocity: 3000
+          });
+      }, 700);
+
+      // Set Ink
+      ionicMaterialInk.displayEffect();
+	
+	  
+	  
+
+	    $ionicModal.fromTemplateUrl('', {
+	      scope: $scope,
+	      animation: 'slide-in-up'
+	    }).then(function(modal) {
+	      $scope.terms_of_service_modal = modal;
+	    });
+
+	    $ionicModal.fromTemplateUrl('privacyPolicy.html', {
+	      scope: $scope,
+	      animation: 'slide-in-up'
+	    }).then(function(modal) {
+	      $scope.privacy_policy_modal = modal;
+	    });
+
+	    $scope.showTerms = function() {
+	      $scope.terms_of_service_modal.show();
+	    };
+
+	    $scope.showPrivacyPolicy = function() {
+	      $scope.privacy_policy_modal.show();
+	    };
+
+	  
+	 
+	  
+				
+	    
+	  
+	  
+	  
+	  
+	  
+	 
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+  })
  
   
   

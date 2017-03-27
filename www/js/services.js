@@ -91,7 +91,32 @@ angular.module('starter.services', ['starter.utils', 'starter.auth' , 'firebase'
 
 
 
+   .factory('Profiles', function($rootScope, $firebaseArray, $firebaseAuth, $firebaseObject) {
+     
 
+	 
+  	
+  	 var profilePicRef = new firebase.database().ref('users/');
+   	  //var eventsInfo = $firebaseArray(eventsRef);
+
+    
+
+       //var eventRef = new firebase.database().ref('users/' + '/events');
+	
+
+       return {
+		   getProfilePic: getProfile
+		 
+       }
+
+  	 function getProfile(id) {
+  		 return $firebaseObject(profilePicRef.child(id)); 
+		 
+  	 }
+	 
+
+	 
+     })
 
 
 

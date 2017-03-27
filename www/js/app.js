@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox', 'starter.controllers', 'starter.services', 'starter.utils', 'starter.config', 'starter.auth', 'ionic-material' , 'ngCordova', 'ngMessages', 'ngAnimate', 'ui.router','angularGeoFire', 'firebase'])
-.run(function($ionicPlatform, $rootScope, $state, $timeout, $ionicLoading, $ionicPopup) {
+.run(function($ionicPlatform, $rootScope, $state, $timeout, $ionicLoading, $ionicPopup, $ionicNavBarDelegate) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -27,6 +27,8 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 		if(navigator && navigator.splashscreen) {
 			navigator.splashscreen.hide();
 		}	
+			
+		
 			
 	   // $rootScope.showLoading = function(text) {
 	      //  $ionicLoading.show({
@@ -186,6 +188,37 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
           }
       }
   })
+  
+  
+  
+  .state('app.account', {
+      url: '/account',
+      views: {
+          'menuContent': {
+              templateUrl: 'templates/account.html',
+              controller: 'AccountCtrl'
+          },
+          'fabContent': {
+              templateUrl: '',
+              controller: ''
+          }
+      }
+  })
+  
+  .state('app.myDetails', {
+      url: '/details',
+      views: {
+          'menuContent': {
+              templateUrl: 'templates/.myDetails.html',
+              controller: 'myDetailsCtrl'
+          },
+          'fabContent': {
+              templateUrl: '',
+              controller: ''
+          }
+      }
+  })
+  
 
   .state('app.eventCat', {
         url: '/eventCat/:eventType',
@@ -360,7 +393,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/signUp');
+  $urlRouterProvider.otherwise('/app/profile');
   
 
 })
