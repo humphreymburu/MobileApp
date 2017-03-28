@@ -863,7 +863,7 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
   
   .controller('AccountCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
-    $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, ionicMaterialInk, $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
+    $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, $ionicLoading, $ionicPopup,  ionicMaterialInk , $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
       // Set Header
       $scope.$parent.showHeader();
 	  
@@ -893,33 +893,52 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	
 	  
 	  
-
-	    $ionicModal.fromTemplateUrl('', {
-	      scope: $scope,
-	      animation: 'slide-in-up'
-	    }).then(function(modal) {
-	      $scope.terms_of_service_modal = modal;
-	    });
-
-	    $ionicModal.fromTemplateUrl('privacyPolicy.html', {
-	      scope: $scope,
-	      animation: 'slide-in-up'
-	    }).then(function(modal) {
-	      $scope.privacy_policy_modal = modal;
-	    });
-
-	    $scope.showTerms = function() {
-	      $scope.terms_of_service_modal.show();
-	    };
-
-	    $scope.showPrivacyPolicy = function() {
-	      $scope.privacy_policy_modal.show();
-	    };
-
-	  
 	 
-	  
-				
+			
+
+		    $ionicModal.fromTemplateUrl('templates/policy.html', {
+		        scope: $scope,
+		        animation: 'slide-in-up'
+		    }).then(function(modal) {
+		        $scope.modal = modal;
+				console.log($scope.modal);
+		    });
+
+
+		    $ionicModal.fromTemplateUrl('templates/services.html', {
+		        scope: $scope,
+		        animation: 'slide-in-up'
+		    }).then(function(modal) {
+		        $scope.modal = modal;
+				console.log($scope.modal);
+		    });
+
+
+
+		    $scope.openServices = function() {
+		        $scope.modal.show();
+		    };
+			
+		    $scope.closeServices= function() {
+		        $scope.modal.hide();
+		    };
+
+
+
+
+		    $scope.openPrivacy = function() {
+		        $scope.modal.show();
+		    };
+			
+		    $scope.closePrivacy = function() {
+		        $scope.modal.hide();
+		    };
+		    // Cleanup the modal when we're done with it
+		    $scope.$on('$destroy', function() {
+		        $scope.modal.remove();
+		    });
+           
+			 
 	    
 	  
 	  
