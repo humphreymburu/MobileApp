@@ -326,6 +326,7 @@ overflow-y: hidden !important;
 .profile {
 	 height: 100px !important;
 	 box-shadow: none !important;
+	 border-bottom: solid 1px #ccc !important;
 }
 
 .item, .item-complex .item-content, .item-radio .item-content {
@@ -348,6 +349,16 @@ overflow-y: hidden !important;
    border-color: #ddd !important;
    
 }
+
+.item-custom.item-input {
+    border-bottom: solid 1px #ccc !important;	
+}	
+	
+	
+.item-border.item-input {
+	border-left: solid 1px #ccc !important; 
+}	
+	
 
 .ava {
  
@@ -378,4 +389,28 @@ overflow-y: hidden !important;
 .stab, a.stab {
     color: #8a8a8a;
 }
-    
+
+.form-pad {
+	margin-top: 4px;
+}
+ 
+.form-row {
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+}  
+
+.form-line {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -moz-box-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+	display: inline-block;
+	padding: 1px 0 1px 0;
+	width: 50%;
+    float: left;
+	
+}  

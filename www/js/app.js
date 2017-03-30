@@ -205,12 +205,12 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
       }
   })
   
-  .state('app.myDetails', {
-      url: '/details',
+  .state('app.editDetails', {
+      url: '/editDetails',
       views: {
           'menuContent': {
-              templateUrl: 'templates/.myDetails.html',
-              controller: 'myDetailsCtrl'
+              templateUrl: 'templates/editDetails.html',
+              controller: 'editDetailsCtrl'
           },
           'fabContent': {
               templateUrl: '',
@@ -331,6 +331,37 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 	      })
 
 		  
+		  
+		  
+		  .state('app.createAccount', {
+		        url: '/createAccount',
+		        views: {
+		          'menuContent' :{
+		            templateUrl: 'templates/createAccount.html',
+		            controller: 'createAccountCtrl'
+		          },
+		          'fabContent': {
+		              templateUrl: '',
+		              controller: ''
+		          }
+		        }
+		      })
+		  
+		  
+		  
+		  .state('app.intro', {
+		        url: '/intro',
+		        views: {
+		          'menuContent' :{
+		            templateUrl: 'templates/intro.html',
+		            controller: 'introCtrl'
+		          },
+		          'fabContent': {
+		              templateUrl: '',
+		              controller: ''
+		          }
+		        }
+		      })
 
 
 	  .state('app.categories', {
@@ -393,7 +424,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/profile');
+  $urlRouterProvider.otherwise('/app/intro');
   
 
 })
