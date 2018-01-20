@@ -1,18 +1,8 @@
 {
-  "name": "smartApp",
-  "app_id": "4d60f4ce",
-  "gulpStartupTasks": [
-    "sass",
-    "watch"
-  ],
-  "watchPatterns": [
-    "www/**/*",
-    "scss/**/*",
-    "!www/lib/**/*",
-    "!www/**/*.map"
-  ],
+  "name": "Tukio-Events-App",
+  "app_id": "8a33bdcb",
+  "type": "ionic-angular",
   "integrations": {
-    "cordova":{}
-  },
-  "type": "ionic-angular"
+    "cordova": {}
+  }
 }
