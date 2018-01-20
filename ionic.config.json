@@ -1,14 +1,16 @@
 {
   "name": "smartApp",
-  "app_id": "33",
+  "app_id": "3cfdd607",
   "gulpStartupTasks": [
     "sass",
     "watch"
   ],
   "watchPatterns": [
     "www/**/*",
-	"scss/**/*",
+    "scss/**/*",
     "!www/lib/**/*",
     "!www/**/*.map"
-  ]
+  ],
+  "integrations": {},
+  "type": "ionic1"
 }

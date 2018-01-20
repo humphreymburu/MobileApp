@@ -149,7 +149,7 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
       views: {
           'menuContent': {
               templateUrl: 'templates/login.html',
-              controller: 'LoginCtrl'
+              controller: 'emailLoginCtrl'
           },
           'fabContent': {
               template: ''
@@ -347,6 +347,19 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 		        }
 		      })
 		  
+			  .state('app.emailLogin', {
+			        url: '/emailLogin',
+			        views: {
+			          'menuContent' :{
+			            templateUrl: 'templates/emailLogin.html',
+			            controller: 'emailLoginCtrl'
+			          },
+			          'fabContent': {
+			              templateUrl: '',
+			              controller: ''
+			          }
+			        }
+			      })
 		  
 		  
 		  .state('app.intro', {
@@ -402,6 +415,20 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 		        }
 		      })
 
+            .state('app.resetPassword', {
+		        url: '/resetPassword',
+		        views: {
+		          'menuContent' :{
+		            templateUrl: 'templates/forgot_password.html',
+		            controller: 'ResetCtrl'
+		          },
+		          'fabContent': {
+		              templateUrl: '',
+		              controller: ''
+		          }
+		        }
+		      })
+
 
 			  .state('app.changePassword', {
 			        url: '/changePassword',
@@ -423,11 +450,17 @@ angular.module('starter', ['ionic', 'starter.config', 'ionMdInput', 'tabSlideBox
 
 
 
+
+
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/intro');
+  $urlRouterProvider.otherwise('/app/login');
   
 
 })
+
+
+
+
 
 
 .directive('googleplace', [ function() {

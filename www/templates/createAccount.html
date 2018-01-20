@@ -1,58 +1,66 @@
-<ion-view view-title="Login" align-title="left">
-    <ion-content style="background: url(img/login.jpg) center; background-size: cover;">
-        <div class="hero no-header flat">
-            <div class="content">
-                <div class="app-icon">
-                	<img src="/img/logo.png">
-                </div>
-             
-            </div>
-        </div>
-		 
- <div class="lists">
-	<div class="log">
-		 <form>
-		  <md-input-container>
-		             
+<ion-view align-title="left" class="auth-view" cache-view="false">
 
-		                  <input placeholder="Email" type="email" ng-model="data.email" hightlight-color="assertive" class="item item-input"></input>
-						  
-						  <br>
-		               
-		          <input placeholder="Password" type="password" ng-model="data.pass" hightlight-color="assertive" class="item item-input"></input>
-				  <br>
-				 
-		
-<div ng-cloak ng-show="createMode"><input placeholder="Confirm your password..." type="password" ng-model="data.confirm"  hightlight-color="assertive"  class="item item-input"></input>	</div>
-						 
-						 
-		  </md-input-container>
-	  </div> </div>
-<!--<i class="material-icons">account_circle</i><i class="material-icons">lock</i>
-	 -->
+<ion-nav-bar class="create">
+  <ion-nav-back-button class="button-clear button-pad"
+    ng-click="back()">
+     Back
+  </ion-nav-back-button>
+</ion-nav-bar>
 
-			
-						    
-	
-		<div class="lefty">		
-		 <div class="padding">
-		
-		
-			    <button  class="button button-positive button-balanced ink" ng-click="login(data.email,data.pass)" ng-hide="createMode">Log In</button>
-			    <button class="button button-positive button-light ink" ng-click="createMode = true" ng-hide="createMode">Register</button>
-			    <button class="button button-positive button-light ink" ng-cloak ng-show="createMode" ng-click="createAccount()">Create Account</button>
-			    <button class="button button-positive button-light ink" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
 
-			    <p ng-show="error" class="error">{{error}}</p>
-				<p ng-show="errorMessage" class="error">{{errorMessage}}</p>
-			</div>
-           </div>
-</form>
-
-		<div class="button-bar social-login">
-		<button ng-click="faceSign()" class="button button-small button-border icon-left ion-social-facebook button-positive-900">Facebook</button> <br>          
-		<button ng-click="twitterSign()" class="button button-small button-border icon-left ion-social-twitter button-calm-900"> Twitter</button>       
-		</div>
+<ion-content scroll="false" class="signup">
+  <div class="row form-heading">
+	      <div class="col">
+	        <div class="col col-bottom">
+	          <button ng-click="faceSign()" class="button button-large button-border icon-left ion-social-facebook button-positive-900 face-box"> Sign Up with Facebook</button>
+	        </div>
+	      </div>
+	    </div>
+	    <div class="row form-separator">
+	      <hr class="separator-line2"/>
+	      <span class="separator-mark">OR</span>
+	      <hr class="separator-line2"/>
+	    </div>
+	  
+	  
+	  
+	<div class="list" ng-controller="createAccountCtrl">
+		<form>
+        <label class="item item-input item-custom email-input">
+        <input type="text" placeholder="Email" ng-model="data.email" hightlight-color="assertive" required>
+        </label>
 		
+        <label class="item item-input item-custom password-input" show-hide-container>
+        <input type="password" placeholder="Password" name="password" ng-model="data.pass" show-hide-input required >
+        </label>
+		
+		<div class="form-row">
+		<div class="form-line">
+	    <label class="item item-input item-custom">
+	    <input type="text" placeholder="First Name" name="firstName" ng-model="data.firstName" hightlight-color="assertive" required>
+	    </label>
+	    </div>
+	    <div class="form-line"> 
+		<label class="item item-input item-custom item-border">
+	    <input type="text" placeholder="Last Name" name="lastName" ng-model="data.lastName" hightlight-color="assertive" required>
+	    </label>
+	    </div>
+				
+		</div>	
+		<div class="padding form-pad2">
+		<div class="error" ng-if="errorMessage" ng-bind="errorMessage"></div>
+					
+	            <br/>
+				
+	  <button class="button button-block button-balanced ink" data-ink-color="#9DEAFF" data-ink-opacity="1" ng-click="createAccount(data.email,data.pass,data.firstName,data.lastName)">
+	             Submit
+				</button>
+       </div>
+
+				</form>
+	            </div>
+	  
+
     </ion-content>
 </ion-view>
+

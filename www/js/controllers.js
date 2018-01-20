@@ -1,5 +1,5 @@
 //'use strict'
-angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services', 'angularGeoFire', 'ngStorage'])
+angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordova', 'starter.services', 'starter.directives', 'angularGeoFire', 'ngStorage'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout) {
     // Form data for the login modal
@@ -87,30 +87,28 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 
 
 .controller('LoginCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $localStorage,
-    $sessionStorage, Auth, $state, fbutil, $firebaseAuth) {
+    $sessionStorage, Auth, $state, fbutil, $firebaseAuth, $ionicLoading) {
     $scope.$parent.clearFabs();
      $timeout(function() {
          $scope.$parent.hideHeader();
      }, 0);
      ionicMaterialInk.displayEffect();
 	
-	
-  
-  
-
-
-	$scope.data = {
+    	$scope.data = {
 		"email" : null,
-		"pass"  : null,
-		"confirm" : null,
-		"createMode" : false
+		"pass"  : null
+		//"confirm" : null,
+		//"createMode" : false
 	}
 	
 
-    $scope.login = function(email, pass) {
-      $scope.err = null;
-    //$rootScope.showLoading('Logging you in...');
-	
+    $scope.userLogin = function(email, pass) {
+    $scope.errorCode
+	$scope.errorMessage = null;
+
+	     // $ionicLoading.show({
+	        //template: 'Logging in progress'
+	      //});
 	
 	
      var email = $scope.data.email;
@@ -140,27 +138,21 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		   
 		   if(pendingCred) {
 			   
-		   var pendingCredObj = firebase.auth.FacebookAuthProvider.credential(JSON.parse(pendingCred));
+		      var pendingCredObj = firebase.auth.FacebookAuthProvider.credential(JSON.parse(pendingCred));
  		   
-		   previousUser.link(pendingCredObj).then(function(user) {
- 		       console.log("Facebook Account linking success", user);
- 		   }, function(error) {
+		      previousUser.link(pendingCredObj).then(function(user) {
+ 		          console.log("Facebook Account linking success", user);
+ 		      }, function(error) {
  		       console.log("Facebook Account linking error", error);
-			   
 			   // Sign in user with another account
 			     firebase.auth().signInWithCredential(pendingCredObj).then(function(user) {
 			     console.log("Sign In Success", user);
 			     var currentUser = user;
 			     // Merge prevUser and currentUser accounts and data
-			     // ...
 				 previousUser = currentUser;
-				 
-				 
-				 
-			
-				 
+
 			   }, function(error) {
-			     console.log("Sign In Error", error);
+			      console.log("Sign In Error", error);
 			   });
 			   
 			   
@@ -226,15 +218,39 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 		   $scope.errorCode = error.code;
 		   $scope.errorMessage = error.message;
 		            // [START_EXCLUDE]
-		  if ($scope.errorCode === 'auth/wrong-password') {
-		              console.log('Wrong password.');
-		            } else {
-		              console.log($scope.errorMessage);
-		            }
+		
+		     
+			 
+		  switch ($scope.errorCode) {
+		          case 'auth/wrong-password':
+		            $scope.errorMessage = 'Wrong password';
+					
+		            break;
+		          case 'auth/user-not-found':
+		            $scope.errorMessage = 'User not found';
+		            break;
+	              case 'auth/invalid-email':
+	                $scope.errorMessage = 'Invalid email';
+	                break;
+                  case 'auth/user-disabled':
+                    $scope.errorMessage = 'User Disabled';
+                    break;
+		
+				  default:
+		            $scope.errorMessage = 'Error: [' + error.code + ']';
+		        }
+			 
+			 
+			 
+			 
+			 
+			        
   	    });
 	
 	
 	 //$rootScope.hideLoading();
+	 
+	 $ionicLoading.hide();
      
    	
    
@@ -247,109 +263,164 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
     };
 	
-	
-	$scope.upPassword = function (){
-	
-	Auth.$updatePassword("newPass").then(function() {
-	  console.log("Password changed successfully!");
-	}).catch(function(error) {
-	  console.error("Error: ", error);
-	});
-	
-};
-	
-	
-	
-	
-	
+
 	
 	
 
-    $scope.createAccount = function(email,pass) {
-     // $rootScope.showLoading('Creating Account...');
-	  $scope.err = null;
-      if( assertValidAccountProps() ) {
-        var email = $scope.data.email;
-        var pass = $scope.data.pass;
-        // create user credentials in Firebase auth system
+    
 	
 	
-	Auth.$createUserWithEmailAndPassword(email,pass)        
-		.then(function() {
-            // authenticate so we have permission to write to Firebase
-            return Auth.$signInWithEmailAndPassword(email,pass);
-          })
-          .then(function(firebaseUser) {
-            // create a user profile in our data store
-			  var ref = firebase.database().ref('users/' + firebaseUser.uid);
-			              return fbutil.handler(function(cb) {
-			                ref.set({email: email, name: name||firstPartOfEmail(email)}, cb);
-			              });
-			            }) 
-          .then(function(/* user */) {
-            // redirect to the account page
-            $state.go('app.profile');
-			
-			
-          }).catch(function(error){
-			  
-			  var errorCode = error.code;
-			   var errorEmail = error.email;
-			  if (errorCode == 'auth/email-already-in-use') {
-			     alert('email already in use , try Logging in');
-				 console.log("error email",email, JSON.stringify(errorCode));
-			   } else {
-			     alert(errorMessage);
-			   }
-			   
-            $scope.error = errorMessage(error);
-			 console.log("error email", $scope.error);
-			//$rootScope.hideLoading();
-			//$rootScope.alert('<b><i class="icon ion-person"></i> Login error</b>', err);
-          });
-		  
-      }
-	 
-	 
-    };
-
-    function assertValidAccountProps() {
-      if( !$scope.data.email ) {
-        $scope.error = 'Please enter an email address';
-      }
-      else if( !$scope.data.pass || !$scope.data.confirm ) {
-        $scope.error = 'Please enter a password';
-      }
-      else if( $scope.data.createMode && $scope.data.pass !== $scope.data.confirm ) {
-        $scope.error = 'Passwords do not match';
-      }
-      return !$scope.error;
-	  
-    }
-
-    function errorMessage(error) {
-      return angular.isObject(error) && error.code? error.code : error + '';
-    }
-
-    function firstPartOfEmail(email) {
-      return ucfirst(email.substr(0, email.indexOf('@'))||'');
-    }
-
-    function ucfirst (str) {
-      // inspired by: http://kevin.vanzonneveld.net
-      str += '';
-      var f = str.charAt(0).toUpperCase();
-      return f + str.substr(1);
-    }
+	
+	
   })
   
   
   
   
+  .controller('createAccountCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $ionicSideMenuDelegate, $localStorage,
+    $sessionStorage, Auth, $state, fbutil, $firebaseAuth, $ionicPopup, $ionicHistory) {
+		
+      // $scope.$parent.showHeader();
+	  
+        $scope.$parent.clearFabs();
+        $scope.isExpanded = false;
+        $scope.$parent.setExpanded(false);
+        $scope.$parent.setHeaderFab(false);
+
+        // Set Ink
+        ionicMaterialInk.displayEffect();
+	
+
+	   $scope.login = function() {
+	      $state.go('app.createAccount');
+	   };
+
+	
+	   $scope.back = function() {
+		  $state.go('app.login'); 
+	   };
+		
+	   	
+       $scope.createAccount = function(email, pass, firstName, lastName) {
+        // $rootScope.showLoading('Creating Account...');
+   	   $scope.err = null;
+
+	
+	
+   	Auth.$createUserWithEmailAndPassword(email, pass)        
+	    .then(function() {
+           // authenticate so we have permission to write to Firebase
+           return Auth.$signInWithEmailAndPassword(email,pass);
+         })
+         .then(function(firebaseUser) {
+               // create a user profile in our data store
+							 var userNames = firstName + ' ' + lastName;
+   			  var ref = firebase.database().ref('users/');
+   			  ref.push({
+				  email: email,
+				  displayName: userNames
+   		     });
+		   
+		   })         
+	     .then(function(/* user */) {
+               // redirect to the account page
+               $state.go('app.profile');
+         }).catch(function(error){
+			  
+   			  $scope.errorCode = error.code;
+   			 $scope.Message = error.message;
+			   
+			  switch ($scope.errorCode) {
+			          case 'auth/email-already-in-use':
+			            $scope.errorMessage = 'Email already in use';
+			            break;
+			          case 'auth/invalid-email':
+			            $scope.errorMessage = 'Invalid Email';
+			            break;
+		              case 'auth/weak-password':
+		                $scope.errorMessage = 'Weak Password';
+		                break;
+	                  case 'auth/operation-not-allowed':
+	                    $scope.errorMessage = 'Operation not Allowed';
+	                    break;
+		
+					  default:
+			            $scope.errorMessage = 'Error: [' + error.code + ']';
+			        } 
+	 		  
+   			//$rootScope.hideLoading();
+   			//$rootScope.alert('<b><i class="icon ion-person"></i> Login error</b>', err);
+             });
+		  
+        
+		 }
+		
+		
+		
+	})
   
-  .controller('SignUpCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $localStorage,
+  
+    .controller('emailLoginCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $ionicSideMenuDelegate, $localStorage,
+      $sessionStorage, Auth, $state, fbutil, $firebaseAuth, $ionicPopup, $ionicHistory, $ionicModal, $ionicLoading) {
+		
+        // $scope.$parent.showHeader();
+	  
+          $scope.$parent.clearFabs();
+          $scope.isExpanded = false;
+          $scope.$parent.setExpanded(false);
+          $scope.$parent.setHeaderFab(false);
+
+          // Set Ink
+          ionicMaterialInk.displayEffect();
+	
+
+  	   $scope.login = function() {
+  	      $state.go('app.createAccount');
+  	   };
+
+	
+  	   $scope.back = function() {
+  		  $state.go('app.login'); 
+  	   };
+
+		
+		
+	   $ionicModal.fromTemplateUrl('templates/forgot_password.html', {
+	       scope: $scope,
+	       animation: 'slide-in-up'
+	     }).then(function(modal) {
+	       $scope.forgot_modal = modal;
+	     });	
+		
+		
+	   $scope.showForgotPassword = function() {
+	       $scope.forgot_modal.show();
+	   };
+	   
+	   $scope.hideForgotPassword = function() {
+	       $scope.forgot_modal.hide();
+	   };
+		
+ 
+		
+  	})
+	
+	
+
+  
+  
+  
+  
+  
+  
+  
+  .controller('SignUpCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $ionicSideMenuDelegate, $localStorage,
     $sessionStorage, Auth, $state, fbutil, $firebaseAuth, $ionicPopup) {
-      $scope.$parent.clearFabs();
+      
+		$ionicSideMenuDelegate.canDragContent(false);
+	  
+	  
+	  $scope.$parent.clearFabs();
        $timeout(function() {
            $scope.$parent.hideHeader();
        }, 0);
@@ -861,8 +932,53 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
   })
 
-  
-  .controller('AccountCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
+
+
+.controller('ResetCtrl', function($scope, $timeout, $rootScope, $stateParams, ionicMaterialInk, $ionicSideMenuDelegate, $localStorage,
+    $sessionStorage, Auth, $state, fbutil, $firebaseAuth, $ionicPopup) { 
+      
+        
+		$scope.reset = function(email) {
+            var emailAddress = $scope.data.email;
+			  console.log(emailAddress);
+
+              var auth = firebase.auth();
+              auth.sendPasswordResetEmail(emailAddress).then(function() {
+               // Email sent.
+              }).catch(function(error) {
+              // An error happened.
+
+             $scope.errorCode = error.code;
+   			 $scope.Message = error.message;
+			   
+			  switch ($scope.errorCode) {
+			          case 'auth/invalid-email':
+			            $scope.errorMessage = 'Invalid Email';
+			            break;
+	                  case 'auth/operation-not-allowed':
+	                    $scope.errorMessage = 'Operation not Allowed';
+	                    break;
+					  default:
+			            $scope.errorMessage = 'Error: [' + error.code + ']';
+			        } 
+
+              });
+
+
+
+             
+		}
+		
+		 
+
+
+	})
+
+
+
+
+
+.controller('AccountCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
     $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, $ionicLoading, $ionicPopup,  ionicMaterialInk , $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
       // Set Header
       $scope.$parent.showHeader();
@@ -957,13 +1073,9 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
   })
  
   .controller('editDetailsCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
-    $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, $ionicLoading, $ionicPopup,  ionicMaterialInk , $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
+    $sessionStorage, $timeout, ionicMaterialMotion, $ionicActionSheet,$q, $ionicModal, $cordovaCamera, $cordovaImagePicker, $cordovaFile, $ionicLoading, $ionicPopup,  ionicMaterialInk , $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
       // Set Header
       $scope.$parent.showHeader();
-	  
-   
-	  
-	  
       $scope.$parent.clearFabs();
       $scope.isExpanded = false;
       $scope.$parent.setExpanded(false);
@@ -985,13 +1097,308 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       // Set Ink
       ionicMaterialInk.displayEffect();
 	
+	  var user = firebase.auth().currentUser;
+    var firstName,lastName, photoUrl, emailVerified;
+console.log(user.uid);
+      if (user != null) {
+		 console.log("who is", user.lastName, user);
+          $scope.firstname = user.displayName.split(' ').slice(0, -1);
+		      $scope.lastname = user.displayName.split(' ').slice(-1);
+          $scope.email = user.email;
+          $scope.photoUrl = user.photoURL;
+          $scope.emailVerified = user.emailVerified;
+          //uid = user.uid;  // The user's ID, unique to the Firebase project. Do NOT use
+                   // this value to authenticate with your backend server, if
+                   // you have one. Use User.getToken() instead.
+
+				   if(user.provider!= null) {
+					    user.providerData.forEach(function (profile) {
+                        $scope.firstname = profile.displayName.split(' ').slice(0, -1);
+						$scope.lastname = profile.displayName.split(' ').slice(-1);
+                        $scope.email = profile.email;
+                        $scope.photoURL = profile.photoURL;
+					})
+				   }
+}
 	  
-	    
+	 
+	 
+	  var displayNamez = $scope.email;
+	  console.log(displayNamez);
+	  
+	    $scope.updateProfile = function(email,firstname,lastname) {
+			var displayName = firstname +' '+ lastname;
+              user.updateProfile({
+		      email: email,
+		      displayName: displayName
+
+        
+           }).then(function() {
+           // Update successful.
+           }).catch(function(error) {
+           // An error happened.
+           });
+
+		}
 	  
 	  
+          
+
+
+
+
+
+
+
+
+
+	
+	
+function saveStorage(_imageBlob) {
+var user = firebase.auth().currentUser;
+
+if (user) {
+	 var userId = user.uid;
+	 console.log("know", _imageBlob);
+
+	 var storageRef = firebase.storage().ref('users').child(userId + '/profilePicture.jpeg');
+	 var uploadTask = storageRef.putString(_imageBlob);
+  // User is signed in.
+} else {
+  // No user is signed in.
+	console.log("not signed");
+}
+
+
+
+// Upload file and metadata to the object 'images/mountains.jpg'
+//var uploadTask = storageRef.child('images/' + _imageBlob.name).putString(_imageBlob);
+
+// Listen for state changes, errors, and completion of the upload.
+uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+  function(snapshot) {
+   console.log("uploaded");
+  }, function(error) {
+
+  // A full list of error codes is available at
+  // https://firebase.google.com/docs/storage/web/handle-errors
+  switch (error.code) {
+    case 'storage/unauthorized':
+      // User doesn't have permission to access the object
+      break;
+
+    case 'storage/canceled':
+      // User canceled the upload
+      break;
+
+ 
+
+    case 'storage/unknown':
+      // Unknown error occurred, inspect error.serverResponse
+      break;
+  }
+}, function() {
+  // Upload completed successfully, now we can get the download URL
+  var downloadURL = uploadTask.snapshot.downloadURL;
+	 console.log("url download", downloadURL);
+ 
+		
+          // we have the information on the image we saved, now 
+          // let's save it in the realtime database
+						 
+          //return saveReferenceInDatabase(_responseSnapshot);
+					console.log("save ref db");
+         
+          var durl = $scope.pictureUrl();
+          
+    	
+
+
+
+		
+	
+
+});
+
+	}	
+
+$scope.pictureUrl = function() {
+	// Create a reference to the file we want to download
+var user = firebase.auth().currentUser;
+         var userId = user.uid;
+         var storageRef = firebase.storage().ref('users').child(userId + '/profilePicture.jpeg');
+
+// Get the download URL
+storageRef.getDownloadURL().then(function(url) {
+  // Insert url into an <img> tag to "download"
+
+var dataSave = {
+  pictureUrl: url
+}
+firebase.database().ref('users/' + userId).update(dataSave).then(function() {
+  console.log("Update successful");
+}).catch(function(error) {
+  consorle.log(error);
+});
+
+
+	console.log(url);
+	return url;
+}).catch(function(error) {
+
+  // A full list of error codes is available at
+  // https://firebase.google.com/docs/storage/web/handle-errors
+  switch (error.code) {
+    case 'storage/object_not_found':
+      // File doesn't exist
+      break;
+
+    case 'storage/unauthorized':
+      // User doesn't have permission to access the object
+      break;
+
+    case 'storage/canceled':
+      // User canceled the upload
+      break;
+
+
+
+    case 'storage/unknown':
+      // Unknown error occurred, inspect the server response
+      break;
+  }
+});
+
+}
+
+
+$scope.takePicture = function() {
+            
+
+  var options = {
+      quality: 50,
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      allowEdit: true,
+      encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 100,
+      targetHeight: 100,
+      popoverOptions: CameraPopoverOptions,
+      saveToPhotoAlbum: true,
+	  correctOrientation:true
+    };
+
+    $cordovaCamera.getPicture(options)
+		.then(function(imageData) {
+      var image2 = 'data:image/jpeg;base64,' + imageData;
+      console.log(image2);
+      return saveStorage(image2);
+
+    }, function(err) {
+      console.log(err);
+			console.log("blimey");
+    });	  
+	
+}
+
+
+
+function saveTo(_imageBlob) {
+
+      return $q(function (resolve, reject) {
+        // Create a root reference to the firebase storage
+        var storageRef = firebase.storage().ref();
+
+        // pass in the _filename, and save the _imageBlob
+        var uploadTask = storageRef.child('images/').put(_imageBlob);
+
+        // Register three observers:
+        // 1. 'state_changed' observer, called any time the state changes
+        // 2. Error observer, called on failure
+        // 3. Completion observer, called on successful completion
+        uploadTask.on('state_changed', function (snapshot) {
+          // Observe state change events such as progress, pause, and resume
+          // See below for more detail
+        }, function (error) {
+          // Handle unsuccessful uploads, alert with error message
+          alert(error.message)
+          reject(error)
+        }, function () {
+          // Handle successful uploads on complete
+          var downloadURL = uploadTask.snapshot.downloadURL;
+
+          // when done, pass back information on the saved image
+          resolve(uploadTask.snapshot)
+        });
+      });
+    }
+
+
+
+
+
+
+
+
+function dataURItoBlob(dataURI, type) {
+    // convert base64 to raw binary data held in a string
+    var byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    var bb = new Blob([ab], { type: type });
+    return bb;
+}
+
+
+$scope.showz = function() {
+
+   // Show the action sheet
+   var hideSheet = $ionicActionSheet.show({
+     buttons: [
+       { 
+				 text: 'Take new photo'
+			
+		   },
+       { 
+				 text: 'Choose existing photo' 
+				
+			 }
+     ],
+     cancelText: 'Cancel',
+     cancel: function() {
+          // add cancel code..
+        },
+     buttonClicked: function(index) {
+		 switch(index) {
+			 case 0:
+			       $scope.takePicture();
+             return true;
+			 case 1:
+			 return true;
+		 }
+       
+     }
+   });
+
+   // For example's sake, hide the sheet after two seconds
+   $timeout(function() {
+     hideSheet();
+   }, 200000);
+
+ };
 	  
-	  
-	  
+
+
 	 
 	  
 	  
@@ -1003,10 +1410,13 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  
   })
  
-  .controller('introCtrl', function($scope, Events, Auth, fbutil, $rootScope, $stateParams, $localStorage,
-    $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, $ionicSlides, $ionicLoading, $ionicPopup,  ionicMaterialInk , $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
+  .controller('introCtrl', function($scope, Events, Auth, fbutil, $rootScope, $state, $stateParams, $localStorage,
+    $sessionStorage, $timeout, ionicMaterialMotion, $ionicModal, $ionicSlideBoxDelegate, $ionicLoading, $ionicSideMenuDelegate, $ionicPopup,  ionicMaterialInk , $firebaseAuth, $ionicHistory, $firebaseObject, Profiles) {
       // Set Header
-      $scope.$parent.showHeader();
+		$ionicSideMenuDelegate.canDragContent(false);
+
+	  
+	  $scope.$parent.showHeader();
 	  
    
 	  
@@ -1015,6 +1425,13 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
       $scope.isExpanded = false;
       $scope.$parent.setExpanded(false);
       $scope.$parent.setHeaderFab(false);
+      $timeout(function() {
+          $scope.$parent.hideHeader();
+      }, 0);
+
+
+
+
 
       // Set Motion
       $timeout(function() {
@@ -1056,7 +1473,9 @@ angular.module('starter.controllers', ['starter.utils', 'starter.auth', 'ngCordo
 	  });
 	  
 	  
-	  
+	  $scope.skip = function() {
+		                 $state.go('app.login');
+		              };
 	  
 	 
 	  

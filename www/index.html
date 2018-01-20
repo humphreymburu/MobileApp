@@ -25,7 +25,8 @@
 
 
 	<!-- Firebase -->
-	<script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
@@ -38,14 +39,17 @@
 	<script src="lib/AngularGeoFire/dist/angularGeoFire.js"></script>
 	<script src="lib/AngularGeoFire/dist/angularGeoFire.min.js"></script>
 	
+
 	<script>
 	  // Initialize Firebase
-	  var config = {
-	    apiKey: "AIzaSyAJYLYMnFoGFRu8ceBYwZzIpDJDKt21Wlo",
-	    authDomain: "events-app-363cb.firebaseapp.com",
-	    databaseURL: "https://events-app-363cb.firebaseio.com",
-	    storageBucket: "events-app-363cb.appspot.com",
-	  };
+		var config = {
+		    apiKey: "AIzaSyA-CZm6Vz3zlVlktAkVnezp8kZwgAGGCaY",
+		    authDomain: "events-app-363cb.firebaseapp.com",
+		    databaseURL: "https://events-app-363cb.firebaseio.com",
+		    projectId: "events-app-363cb",
+		    storageBucket: "events-app-363cb.appspot.com",
+		    messagingSenderId: "424017482058"
+		  };
 	  firebase.initializeApp(config);
 	  
 	  //var storage = firebase.storage();

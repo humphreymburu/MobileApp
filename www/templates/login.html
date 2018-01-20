@@ -1,6 +1,7 @@
-<ion-view view-title="Login" align-title="left">
-    <ion-content style="background: url(img/login.jpg) center; background-size: cover;">
-        <div class="hero no-header flat">
+<ion-view view-title="Login" align-title="left" hide-nav-bar="true" cache-view="false" class="welcome-view">
+    <ion-content style="background: url(img/login.jpg) center; background-size: cover; scroll="false"">
+          <div class="top-content row">
+		<div class="hero no-header flat">
             <div class="content">
                 <div class="app-icon">
                 	<img src="/img/logo.png">
@@ -9,50 +10,26 @@
             </div>
         </div>
 		 
- <div class="lists">
-	<div class="log">
-		 <form>
-		  <md-input-container>
-		             
-
-		                  <input placeholder="Email" type="email" ng-model="data.email" hightlight-color="assertive" class="item item-input"></input>
-						  
-						  <br>
-		               
-		          <input placeholder="Password" type="password" ng-model="data.pass" hightlight-color="assertive" class="item item-input"></input>
-				  <br>
-				 
+		       </div>
+		  
+		  <div class="bottom-content row">
+		         <div class="col col-bottom">
+		           <button ng-click="faceSign()" class="button button-large button-border icon-left ion-social-facebook button-positive-900 face-box">Facebook</button>
+				   <button class="button button-large button-block button-stable" ui-sref="app.emailLogin">
+				                     Sign In with email?
+				               </button>
+				   
+				   
+				  <div class="row form-separator row-sp">
+				        <span class="separator-mark">OR</span>
+				      </div>
+   				   <button class="button button-large button-block button-clear button-stable sign-sp" ui-sref="app.createAccount">
+   				                     Sign Up with Email
+   				               </button>
+		         </div>
+		       </div>
 		
-<div ng-cloak ng-show="createMode"><input placeholder="Confirm your password..." type="password" ng-model="data.confirm"  hightlight-color="assertive"  class="item item-input"></input>	</div>
-						 
-						 
-		  </md-input-container>
-	  </div> </div>
-<!--<i class="material-icons">account_circle</i><i class="material-icons">lock</i>
-	 -->
 
-			
-						    
-	
-		<div class="lefty">		
-		 <div class="padding">
-		
-		
-			    <button  class="button button-positive button-balanced ink" ng-click="login(data.email,data.pass)" ng-hide="createMode">Log In</button>
-			    <button class="button button-positive button-light ink" ng-click="createMode = true" ng-hide="createMode">Register</button>
-			    <button class="button button-positive button-light ink" ng-cloak ng-show="createMode" ng-click="createAccount()">Create Account</button>
-			    <button class="button button-positive button-light ink" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
-
-			    <p ng-show="error" class="error">{{error}}</p>
-				<p ng-show="errorMessage" class="error">{{errorMessage}}</p>
-			</div>
-           </div>
-</form>
-
-		<div class="button-bar social-login">
-		<button ng-click="faceSign()" class="button button-small button-border icon-left ion-social-facebook button-positive-900">Facebook</button> <br>          
-		<button ng-click="twitterSign()" class="button button-small button-border icon-left ion-social-twitter button-calm-900"> Twitter</button>       
-		</div>
 		
     </ion-content>
 </ion-view>
