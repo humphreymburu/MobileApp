@@ -1,0 +1,52 @@
+<ion-view hide-nav-bar="true" cache-view="false">
+    <ion-content scroll="false" class="intro">
+
+  		
+   <ion-slides  options="options" slider="data.slider">
+    <ion-slide-page class="green">
+	<button class="button button-clear button-assertive right"  ng-click="skip()"><p class="intro-skip">Skip</p></button>
+	  <div class="row images-row">
+	    <div class="col">
+	      <div class="illustration-container">
+	        <pre-img ratio="_21_13" helper-class="square-image">
+	          <img class="illustration-image" ng-src="./img/c.png" spinner-on-load/>
+	        </pre-img>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="row copy-row">
+	    <div class="col">
+			 <h1 class="welcome-title">Discover Events</h1>
+	      <p class="welcome-paragraph">Ninjas don't get bored discover events near you</p>
+	    </div>
+	  </div>
+	
+	
+      
+    </ion-slide-page>
+    <ion-slide-page class="amber">
+	<button class="button button-clear button-assertive right"  ng-click="skip()">Skip</button>
+ 	  <div class="row images-row">
+ 	    <div class="col">
+ 	      <div class="illustration-container">
+ 	        <pre-img ratio="_21_13" helper-class="square-image">
+ 	          <img class="illustration-image" ng-src="./img/walkthrough/learn_illustration.png" spinner-on-load/>
+ 	        </pre-img>
+ 	      </div>
+ 	    </div>
+ 	  </div>
+ 	  <div class="row copy-row">
+ 	    <div class="col">
+			 <h1 class="welcome-title">Invite Ninjas</h1>
+ 	      <p class="welcome-paragraph">Ninjas invite their friends to events</p>
+ 	    </div>
+ 	  </div>
+    </ion-slide-page>
+    <ion-slide-page class="blue">
+	<button class="button button-clear button-assertive right"  ng-click="skip()">Skip</button>
+      <div><h1>3</h1></div>
+    </ion-slide-page>
+  </ion-slides>
+		
+    </ion-content>
+</ion-view>
