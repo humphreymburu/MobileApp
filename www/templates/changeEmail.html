@@ -1,0 +1,62 @@
+<ion-view view-title="Change Email">
+    <ion-content>
+   
+	   <form class="list no-margin padding">
+
+
+       <div class="list events padding">
+
+				
+                <label class="item item-input item-floating-label">
+      	                 <span class="input-label">New Email</span>
+      	                 <input type="email" placeholder="New Email" ng-model="data.newEmail" required>
+      	             </label>
+
+
+			  <label class="item item-input item-floating-label">
+   				<span class="input-label"> <label >Your Password</span>
+   				<input type="password" name="password" placeholder="Your password"
+             ng-model="data.pass" required>
+		 </label>
+
+          <br/>
+		  <br/>
+
+           
+
+		        <button class="button button-block button-calm ink" data-ink-color="#9DEAFF"  ng-click="changeEmail(data.pass, data.newEmail)">update email</button>
+
+		        <p class="error" ng-show="emailerr">{{emailerr}}</p>
+		        <p class="good" ng-show="emailmsg">{{emailmsg}}</p>
+				
+
+				            </div>
+				 
+
+	  
+
+	   		</form>
+       
+
+    </ion-content>
+</ion-view>
+
+<!-->
+<form>
+    <fieldset>
+        <legend>Profile</legend>
+
+        <label>
+            <span>Name:</span>
+            <input type="text" name="name" ng-model="profile.name"/>
+        </label>
+
+        <label>
+            <span>Email:</span>
+            <br />{{profile.email}}
+        </label>
+    </fieldset>
+</form>
+
+
+<button ng-click="logout()">Log Out</button> -->

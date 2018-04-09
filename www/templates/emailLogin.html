@@ -1,0 +1,67 @@
+<ion-view align-title="left" class="auth-view" cache-view="false">
+
+<ion-nav-bar class="create">
+  <ion-nav-back-button class="button-clear button-pad"
+    ng-click="back()">
+     Back
+  </ion-nav-back-button>
+</ion-nav-bar>
+
+
+<ion-content scroll="false">
+
+	
+	    <div class="row form-heading">
+	      <div class="col">
+	        <div class="col col-bottom">
+	          <button ng-click="faceSign()" class="button button-large button-border icon-left ion-social-facebook button-positive-900 face-box"> Sign In with Facebook</button>
+	        </div>
+	      </div>
+	    </div>
+	    <div class="row form-separator">
+	      <hr class="separator-line2"/>
+	      <span class="separator-mark">OR</span>
+	      <hr class="separator-line2"/>
+	    </div>
+	  
+	  
+	  
+	<div class="list" ng-controller="LoginCtrl">
+		<form>
+        <label class="item item-input item-custom email-input">
+        <input placeholder="Email" type="email" ng-model="data.email" hightlight-color="assertive" required>
+        </label>
+		
+		
+		
+        <label class="item item-input item-custom email-input" show-hide-container>
+        <input type="password" placeholder="Password" name="password" ng-model="data.pass" show-hide-input required >
+        </label>
+		
+		
+		
+
+				<div class="padding form-pad">
+				<div class="error" ng-if="errorMessage" ng-bind="errorMessage">
+				      </div>
+
+	            <br/>
+				
+	            <button class="button button-block button-balanced ink" data-ink-color="#9DEAFF" data-ink-opacity="1" ng-click="userLogin(data.email,data.pass)">
+	             Submit
+				</button>
+			</div>
+				
+				
+				</form>
+				
+				<div class="alternative-actions">
+				          <a class="forgot-password button button-clear button-block" ng-click="showForgotPassword()">
+				            Forgot your password?
+				          </a>
+				        </div>
+	            </div>
+	  
+
+    </ion-content>
+</ion-view>

@@ -3,35 +3,56 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+   
+	    <link href="css/tabSlideBox.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		
+		
+		
+		
+    <link href='https://fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/ionic.app.css" rel="stylesheet">
+	<link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet"> 
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+	    <script src="lib/ionic/js/ionic.bundle.js"></script>
+	    <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
+	    <script src="lib/ion-md-input/ion-md-input.js"></script>
+	  
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
+    <!-- compiled css output -->
+  
 
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
 
 	<!-- Firebase -->
-	<script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-storage.js"></script>
+	
+	<!-- GeoFire -->
+	<script src="lib/firebase/firebase.js"></script>
+	<script src="https://cdn.firebase.com/libs/geofire/4.1.2/geofire.min.js"></script>
+	<script src="lib/rsvp/rsvp.js"></script>
+	<script src="lib/AngularGeoFire/dist/angularGeoFire.js"></script>
+	<script src="lib/AngularGeoFire/dist/angularGeoFire.min.js"></script>
+	
+
 	<script>
 	  // Initialize Firebase
-	  var config = {
-	    apiKey: "AIzaSyAJYLYMnFoGFRu8ceBYwZzIpDJDKt21Wlo",
-	    authDomain: "events-app-363cb.firebaseapp.com",
-	    databaseURL: "https://events-app-363cb.firebaseio.com",
-	    storageBucket: "events-app-363cb.appspot.com",
-	  };
+		var config = {
+		    apiKey: "AIzaSyA-CZm6Vz3zlVlktAkVnezp8kZwgAGGCaY",
+		    authDomain: "events-app-363cb.firebaseapp.com",
+		    databaseURL: "https://events-app-363cb.firebaseio.com",
+		    projectId: "events-app-363cb",
+		    storageBucket: "events-app-363cb.appspot.com",
+		    messagingSenderId: "424017482058"
+		  };
 	  firebase.initializeApp(config);
+	  
+	  //var storage = firebase.storage();
 	</script>
 
 
@@ -39,9 +60,12 @@
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
+	<script src="js/directives.js"></script>
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
 	<script src="js/auth.js"></script>
+	<script src="js/tabSlideBox.js"></script>
+
 
 	<!-- AngularFire -->
 	<script src="https://cdn.firebase.com/libs/angularfire/2.0.1/angularfire.min.js"></script>
@@ -49,22 +73,20 @@
     <!-- ngMessages -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-messages.js"></script>
 	
+	<script src="lib/ngCordova/dist/ng-cordova.js"></script>
+	 
+	<script src="cordova.js"></script>
+
+	
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-kGPft7WPz_MPaTvN3YPxPYcTC06cVYs&libraries=places"</script>
+	
+	
+	 <script src="/bower_components/angular-animate/angular-animate.js"></script>
+	 <script src="lib/ngstorage/ngStorage.min.js"></script>
 	
 	
   </head>
-  <body ng-app="starter">
-    <!--
-      The nav bar that will be updated as we navigate between views.
-    -->
-    <ion-nav-bar class="bar-stable">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
-    </ion-nav-bar>
-    <!--
-      The views will be rendered in the <ion-nav-view> directive below
-      Templates are in the /templates folder (but you could also
-      have templates inline in this html file if you'd like).
-    -->
+  <body ng-app="starter" class="platform-browser">
     <ion-nav-view></ion-nav-view>
   </body>
 </html>

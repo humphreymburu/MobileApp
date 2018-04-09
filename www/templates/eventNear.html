@@ -1,0 +1,88 @@
+<ion-view view-title="Eventsz">
+	<div class="bar bar-subheader">
+
+		
+        <div class="tabs tabs-light tabs-icon-top static">
+            <a class="tab-item segment" ng-click="near()">
+            Upcoming
+            </a>
+			<a ui-sref="app.categories" class="tab-item segment" ng-click="data.filter=''">
+            Nearby
+            </a>
+            <a ui-sref="app.gallery" class="tab-item segment">
+            </a>
+        </div>
+	      
+			
+			
+			
+			
+			
+	      </div>      
+
+	    </div>
+    
+	
+    <!--<div class="tabs tabs-light tabs-top static">
+         <a class="tab-item segment" ng-click="near()">
+         Upcoming
+		<br/>
+	
+		<div class="row responsive-sm">
+		 <div class="list">
+		     <a class="item item-avatar item-icon-right" ng-repeat="event in events | filter: type | limitTo:limit" href="#/app/detail/{{event.$id}}">
+		         <img src="img/jon-snow.jpg">
+		         <h2>{{event.nameEvent}}</h2>
+				<p>
+		
+	
+		
+		         {{event.date | date:'medium'}}<br>
+				 {{event.desc | limitTo:letterLimit}}<br>
+				 {{event.venue}}
+		       </p>
+		          <i class="icon ion-ios-arrow-right"></i>
+		     </a>
+		 </div>
+		</div>
+
+
+
+	
+		
+		
+         </a>
+		<a ui-sref="app.categories" class="tab-item segment" ng-click="data.filter=''">
+         Nearby
+         </a>
+         <a ui-sref="app.gallery" class="tab-item segment">
+         </a>
+     </div>
+      
+		
+		
+		
+			 </ion-content>-->
+	
+	
+	
+	<ion-content ng-class="{expanded:isExpanded}" class="expand">
+		<div class="row responsive-sm">
+        <div class="list">
+            <a class="item item-avatar item-icon-right" ng-repeat="event in events | filter: type | limitTo:limit" href="#/app/detail/{{event.$id}}">
+                <img src="img/jon-snow.jpg">
+                <h2>{{event.nameEvent}}</h2>
+				<p>
+					
+				
+					
+		         {{event.date | date:'medium'}}<br>
+				 {{event.desc | limitTo:letterLimit}}<br>
+				 {{event.venue}}
+		       </p>
+                 <i class="icon ion-ios-arrow-right"></i>
+            </a>
+        </div>
+		</div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,35 @@
+<ion-view view-title="Event Details">
+    <ion-content ng-class="{expanded:isExpanded}">
+       <div class="list card">
+	   <div class="item">
+	     <h2>{{event.nameEvent}}</h2>
+	   </div>
+
+	   <div class="item item-body">
+	     <img class="full-image" src="event.jpg">
+		  <p class="bolder"><i class="icon ion-calendar larger"></i>{{event.date | date:'medium'}}</p>
+		 <p class="bolder"><i class="icon ion-location larger"></i>{{event.venue}}</p>
+	     <p>
+	       {{event.desc}}
+	     </p>
+
+	       <div class="item tabs tabs-secondary tabs-icon-left">
+			 
+		 <a class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5" ng-click="share()">
+		                         <i class="icon ion-share"></i> Share
+		                     </a>
+							 
+						 
+							 
+							 
+	       
+		   <a class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5" ng-click="isFavorite(event_infos.id)"> 
+	       <i class ="icon ion-heart"></i>
+		   {{likeCounts}}
+	            </a>
+				<br/>
+          
+		    </div>
+	   </div> 
+    </ion-content>
+</ion-view>

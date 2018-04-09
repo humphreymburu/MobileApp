@@ -1,0 +1,14 @@
+{
+  "name": "Tukio-Events-App",
+  "app_id": "f2722249",
+  "type": "ionic1",
+  "integrations": {
+    "cordova": {}
+  },
+  "watchPatterns": [
+    "scss/**/*",
+    "www/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "name": "Tukio",
+    "description": "A Mobile Ionic app deployed on Heroku",
+    "repository": "git@github.com:humphreymburu/MobileApp.git",
+    "logo": "http://ionicframework.com/img/ionic-logo-blog.png",
+    "keywords": ["ionic", "static"]
+  }
