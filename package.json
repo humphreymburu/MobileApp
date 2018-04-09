@@ -8,6 +8,7 @@
     "cordova-plugin-add-swift-support": "^1.7.1",
     "cordova-plugin-ionic": "^3.0.0",
     "cordova-plugin-splashscreen": "^5.0.1",
+    "express": "^4.16.3",
     "fs-extra": "^1.0.0",
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
