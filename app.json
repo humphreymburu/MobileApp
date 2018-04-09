@@ -1,7 +1,7 @@
 {
     "name": "Ionic Starter",
     "description": "A simple Mobile Ionic app deployed on Heroku",
-    "repository": "https://git.heroku.com/boiling-hollows-33968.git",
+    "repository": "https://git.heroku.com/calm-reaches-21004.git",
     "logo": "http://ionicframework.com/img/ionic-logo-blog.png",
     "keywords": ["ionic", "static"]
   }
