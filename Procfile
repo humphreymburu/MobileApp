@@ -1,1 +1,2 @@
-web: ionic serve --lab
+web: node server.js
+
